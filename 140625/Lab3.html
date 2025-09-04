@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+
+        // Завдання із використанням WHILE
+
+        // 1. Виведіть "#" стільки разів, скільки вказав користувач
+        let countSymbols = Number(prompt("Введіть кількість повторень символу '#'"));
+        let resultSymbols = "";
+        let i = 0;
+        while (i < countSymbols) {
+            resultSymbols += "#";
+            i++;
+        }
+        alert("Результат:\n" + resultSymbols);
+
+        // 2. Користувач ввів число, а на екран було виведено всі числа від введеного до 0
+        let startNum = Number(prompt("Введіть число (будь-яке, більше або рівне 0)"));
+        let numbersOutput = "";
+        while (startNum >= 0) {
+            numbersOutput += startNum + " ";
+            startNum--;
+        }
+        alert("Числа від введеного до 0:\n" + numbersOutput);
+
+        // 3. Запросіть число та ступінь. Зведіть число у вказаний ступінь та виведіть результат
+        let baseNum = Number(prompt("Введіть основу (число):"));
+        let exponent = Number(prompt("Введіть ступінь (ціле число >= 0):"));
+        let powerResult = 1;
+        let counter = 0;
+        while (counter < exponent) {
+            powerResult *= baseNum;
+            counter++;
+        }
+        alert(baseNum + " у степені " + exponent + " дорівнює " + powerResult);
+
+        // 4. Запросіть 2 числа і знайдіть всі спільні дільники
+        let num1 = Number(prompt("Введіть перше число:"));
+        let num2 = Number(prompt("Введіть друге число:"));
+        let commonDivisors = "";
+        let divisor = 1;
+        let limit = Math.min(Math.abs(num1), Math.abs(num2));
+        while (divisor <= limit) {
+            if (num1 % divisor === 0 && num2 % divisor === 0) {
+                commonDivisors += divisor + " ";
+            }
+            divisor++;
+        }
+        alert("Спільні дільники: " + commonDivisors);
+
+        // 5. Підрахуйте факторіал числа, введеного користувачем
+        let factNumber = Number(prompt("Введіть число для обчислення факторіалу:"));
+        let factorial = 1;
+        let factCounter = 1;
+        while (factCounter <= factNumber) {
+            factorial *= factCounter;
+            factCounter++;
+        }
+        alert(factNumber + "! = " + factorial);
+
+        // Завдання із використанням DO WHILE
+
+        // 1. Запропонуйте користувачеві розв’язати приклад 2 + 2 * 2, доки він не надасть правильну відповідь
+        let userAnswer;
+        do {
+            userAnswer = prompt("Розв’яжіть приклад:\n2 + 2 * 2 = ?");
+        } while (Number(userAnswer) !== 6);
+        alert("Вірно!");
+
+        // 2. Діліть число 1000 на 2, доки не отримаєте число менше, ніж 50
+        //    Виведіть отримане число і скільки зробили поділів
+        let numberDivide = 1000;
+        let divisionCount = 0;
+        do {
+            numberDivide /= 2;
+            divisionCount++;
+        } while (numberDivide >= 50);
+        alert("Результат ділення: " + numberDivide + "\nКількість поділів: " + divisionCount);
+
+        // Завдання із використанням FOR
+
+        // 1. Виведіть усі числа від 1 до 100, які кратні числу, зазначеному користувачем
+        let divisorInput = Number(prompt("Введіть число для перевірки кратності (від 1 до 100):"));
+        let multiples = "";
+        for (let i = 1; i <= 100; i++) {
+            if (i % divisorInput === 0) {
+                multiples += i + " ";
+            }
+        }
+        alert("Числа від 1 до 100, кратні " + divisorInput + ":\n" + multiples);
+
+        // 2. Виведіть кожен 4-ий елемент із зазначеного користувачем діапазону
+        //    Користувач вказує мінімальне та максимальне значення діапазону
+        let rangeMin = Number(prompt("Введіть мінімальне значення діапазону:"));
+        let rangeMax = Number(prompt("Введіть максимальне значення діапазону:"));
+        let everyFourth = "";
+        // Почнемо з першого елемента діапазону та кожного 4-го
+        for (let i = rangeMin; i <= rangeMax; i += 4) {
+            everyFourth += i + " ";
+        }
+        alert("Кожен 4-ий елемент в діапазоні:\n" + everyFourth);
+
+        // 3. Запросіть число і перевірте, чи просте воно (Просте число ділиться без залишку тільки на себе і на 1)
+        let primeNum = Number(prompt("Введіть число для перевірки на простоту:"));
+        let isPrime = true;
+        if (primeNum < 2) {
+            isPrime = false;
+        } else {
+            for (let i = 2, sqrt = Math.sqrt(primeNum); i <= sqrt; i++) {
+                if (primeNum % i === 0) {
+                    isPrime = false;
+                    break;
+                }
+            }
+        }
+        alert(primeNum + (isPrime ? " є простим числом." : " не є простим числом."));
+
+    </script>
+</body>
+</html>

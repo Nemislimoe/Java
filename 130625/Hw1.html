@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JavaScript</title>
+</head>
+<body>
+    <script>
+        // 1.
+        let name = prompt("Введіть своє ім'я:");
+        alert(`Привіт, ${name}!`);
+
+        // 2. 
+        const CURRENT_YEAR = 2025; 
+        let birthYear = Number(prompt("Введіть свій рік народження:"));
+        let age = CURRENT_YEAR - birthYear;
+        alert(`Вам ${age} років.`);
+
+        // 3. 
+        let sideLength = Number(prompt("Введіть довжину сторони квадрата (см):"));
+        let perimeter = sideLength * 4;
+        alert(`Периметр квадрата: ${perimeter} см.`);
+
+        // 4. 
+        let radius = Number(prompt("Введіть радіус кола:"));
+        let area = Math.PI * (radius ** 2);
+        alert(`Площа кола: ${area.toFixed(2)}`);
+
+        // 5. 
+        let distance = Number(prompt("Введіть відстань між містами (км):"));
+        let timeAvailable = Number(prompt("За скільки годин ви хочете дістатися?"));
+        let speedRequired = distance / timeAvailable;
+        alert(`Необхідна швидкість: ${speedRequired} км/год.`);
+
+        // 6. 
+        const USD_TO_EURO = 0.92; 
+        let dollars = Number(prompt("Введіть суму в доларах:"));
+        let euros = dollars * USD_TO_EURO;
+        alert(`${dollars} долар(и) = ${euros.toFixed(2)} євро.`);
+
+        // 7. 
+        let flashDriveGB = Number(prompt("Введіть обсяг флешки у ГБ:"));
+        let flashDriveMB = flashDriveGB * 1024;
+        const fileSizeMB = 820;
+        let filesCount = Math.floor(flashDriveMB / fileSizeMB);
+        alert(`На флешку вміститься ${filesCount} файл(ів) розміром ${fileSizeMB} МБ.`);
+
+        // 8. 
+        let money = Number(prompt("Введіть суму грошей у гаманці:"));
+        let costChocolate = Number(prompt("Введіть вартість однієї шоколадки:"));
+        let countChocolates = Math.floor(money / costChocolate);
+        let change = money - countChocolates * costChocolate;
+        alert(`Ви зможете купити ${countChocolates} шоколадок, а здача складе ${change}.`);
+
+        // 9. 
+        let num = Number(prompt("Введіть тризначне число:"));
+        let digit1 = num % 10;
+        let digit2 = Math.floor((num % 100) / 10);
+        let digit3 = Math.floor(num / 100);
+        let reversed = digit1 * 100 + digit2 * 10 + digit3;
+        alert(`Перевернуте число: ${reversed}`);
+
+        // 10. 
+        let intNum = Number(prompt("Введіть ціле число:"));
+        let evenOdd = (!(intNum % 2)) && "Парне" || "Непарне";
+        alert(`Число є: ${evenOdd}`);
+    </script>
+</body>
+</html>

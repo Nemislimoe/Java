@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+
+        // Завдання із використанням IF
+
+        // 1. Запросіть у користувача число та визначте чи воно додатне, від’ємне або нуль.
+        let numInput = Number(prompt("Введіть число:"));
+        if (numInput > 0) {
+            alert("Число " + numInput + " є додатним.");
+        } else if (numInput < 0) {
+            alert("Число " + numInput + " є від’ємним.");
+        } else {
+            alert("Введене число дорівнює нулю.");
+        }
+
+        // 2. Запросіть у користувача його вік та перевірте коректність введених даних (0–120 років).
+        let age = Number(prompt("Введіть свій вік:"));
+        if (age >= 0 && age <= 120) {
+            alert("Ваш вік: " + age + " років. Дані коректні.");
+        } else {
+            alert("Введені дані некоректні. Вік має бути від 0 до 120 років.");
+        }
+
+        // 3. Запросіть у користувача число і виведіть його модуль (наприклад, |7| = 7, |-7| = 7).
+        let numForAbs = Number(prompt("Введіть число для обчислення модуля:"));
+        let absValue;
+        if (numForAbs < 0) {
+            absValue = -numForAbs;
+        } else {
+            absValue = numForAbs;
+        }
+        alert("Модуль числа " + numForAbs + " дорівнює " + absValue + ".");
+
+        // 4. Запросіть у користувача час (години, хвилини, секунди) та перевірте коректність введених даних.
+        let hours = Number(prompt("Введіть години (0-23):"));
+        let minutes = Number(prompt("Введіть хвилини (0-59):"));
+        let seconds = Number(prompt("Введіть секунди (0-59):"));
+        if (hours >= 0 && hours < 24 && minutes >= 0 && minutes < 60 && seconds >= 0 && seconds < 60) {
+            alert("Введений час: " + hours + " год : " + minutes + " хв : " + seconds + " с.");
+        } else {
+            alert("Введені дані некоректні. Години мають бути від 0 до 23, хвилини та секунди — від 0 до 59.");
+        }
+
+        // 5. Запросіть координати точки (x, y) та визначіть номер чверті, в яку потрапила ця точка.
+        //    Необхідно врахувати випадки потрапляння точки на осі X або Y або на початок координат.
+        let x = Number(prompt("Введіть координату x:"));
+        let y = Number(prompt("Введіть координату y:"));
+
+        if (x === 0 && y === 0) {
+            alert("Точка знаходиться у початку координат.");
+        } else if (x === 0) {
+            alert("Точка знаходиться на осі Y.");
+        } else if (y === 0) {
+            alert("Точка знаходиться на осі X.");
+        } else if (x > 0 && y > 0) {
+            alert("Точка знаходиться в першій чверті.");
+        } else if (x < 0 && y > 0) {
+            alert("Точка знаходиться в другій чверті.");
+        } else if (x < 0 && y < 0) {
+            alert("Точка знаходиться в третій чверті.");
+        } else if (x > 0 && y < 0) {
+            alert("Точка знаходиться в четвертій чверті.");
+        }
+
+        // Завдання із використанням SWITCH
+
+        // 1. Запросіть у користувача номер місяця та виведіть на екран його назву.
+        let monthNumber = Number(prompt("Введіть номер місяця (1-12):"));
+        let monthName;
+        switch (monthNumber) {
+            case 1:
+                monthName = "Січень";
+                break;
+            case 2:
+                monthName = "Лютий";
+                break;
+            case 3:
+                monthName = "Березень";
+                break;
+            case 4:
+                monthName = "Квітень";
+                break;
+            case 5:
+                monthName = "Травень";
+                break;
+            case 6:
+                monthName = "Червень";
+                break;
+            case 7:
+                monthName = "Липень";
+                break;
+            case 8:
+                monthName = "Серпень";
+                break;
+            case 9:
+                monthName = "Вересень";
+                break;
+            case 10:
+                monthName = "Жовтень";
+                break;
+            case 11:
+                monthName = "Листопад";
+                break;
+            case 12:
+                monthName = "Грудень";
+                break;
+            default:
+                monthName = "Некоректний номер місяця";
+                break;
+        }
+        alert("Місяць: " + monthName);
+
+        // 2. Реалізуйте калькулятор. Користувач вводить 2 числа та знак операції (+, -, *, /).
+        let firstNumber = Number(prompt("Введіть перше число:"));
+        let secondNumber = Number(prompt("Введіть друге число:"));
+        let operator = prompt("Введіть знак операції (+, -, *, /):");
+        let calcResult;
+        switch (operator) {
+            case '+':
+                calcResult = firstNumber + secondNumber;
+                break;
+            case '-':
+                calcResult = firstNumber - secondNumber;
+                break;
+            case '*':
+                calcResult = firstNumber * secondNumber;
+                break;
+            case '/':
+                calcResult = (secondNumber === 0) ? "Ділення на нуль неможливе!" : firstNumber / secondNumber;
+                break;
+            default:
+                calcResult = "Невірний знак операції!";
+                break;
+        }
+        alert("Результат операції: " + calcResult);
+
+        // Завдання із використанням тернарного оператора
+
+        // 1. Запросіть 2 числа і виведіть більше з них.
+        let num1 = Number(prompt("Введіть перше число:"));
+        let num2 = Number(prompt("Введіть друге число:"));
+        let greaterNumber = (num1 > num2) ? num1 : num2;
+        alert("Більше число: " + greaterNumber);
+
+        // 2. Запросіть 1 число та перевірте його на кратність 5.
+        let testNumber = Number(prompt("Введіть число для перевірки кратності 5:"));
+        let multipleOfFive = (testNumber % 5 === 0) ? "число кратне 5" : "число не кратне 5";
+        alert("Результат: " + multipleOfFive);
+
+        // 3. Запросіть у користувача назву планети. Якщо користувач ввів «Земля» або «земля»,
+        //    то виведіть «Привіт, землянине!». В інших випадках виведіть «Привіт, інопланетянине!».
+        let planet = prompt("Введіть назву планети:");
+        let greetMessage = (planet.toLowerCase() === "земля") ? "Привіт, землянине!" : "Привіт, інопланетянине!";
+        alert(greetMessage);
+    </script>
+</body>
+</html>

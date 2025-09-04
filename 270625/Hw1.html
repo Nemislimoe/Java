@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Остання домашкааа</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+      line-height: 1.5;
+    }
+    h1 { margin-bottom: 1rem; }
+    section { margin-bottom: 2.5rem; }
+
+    /* 1. ФОРМА “Ім’я без цифр” */
+    #username-section label,
+    #username-section input,
+    #username-section button {
+      display: block;
+      margin-bottom: .5rem;
+    }
+    #username-section input:invalid {
+      border: 1px solid crimson;
+    }
+
+    /* 2. МОДАЛКА */
+    .overlay {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal {
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 5px;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    .modal button { margin-top: 1rem; }
+
+    /* 3. ФУТБОЛЬНЕ ПОЛЕ І М’ЯЧ */
+    #field {
+      position: relative;
+      width: 770px;
+      height: 567px;
+      background: url('https://ashevchenko.kiev.ua/assets/images/articles/football-pole.jpg');
+      cursor: pointer;
+      overflow: hidden;
+    }
+    #ball {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      background: url('https://tse4.mm.bing.net/th/id/OIP.oX4TFbay100bTuNNjhdQ6gHaHa?rs=1&pid=ImgDetMain&o=7&rm=3') no-repeat center/cover;
+      top: calc(50% - 50px);
+      left: calc(50% - 50px);
+      transition: top .3s ease, left .3s ease;
+      pointer-events: none;
+    }
+
+    /* 4. СВІТЛОФОР */
+    #traffic-section {
+      display: flex; align-items: center; gap: 2rem;
+    }
+    .traffic-light {
+      width: 80px; background: #333; padding: .5rem; border-radius: 10px;
+    }
+    .traffic-light .lamp {
+      width: 60px; height: 60px;
+      margin: .5rem auto;
+      background: #555; border-radius: 50%;
+      transition: background .2s;
+    }
+    .traffic-light .lamp.red.active    { background: red;    }
+    .traffic-light .lamp.yellow.active { background: yellow; }
+    .traffic-light .lamp.green.active  { background: lime;   }
+    #nextBtn {
+      padding: .5rem 1rem;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    /* 5. Кнопки з випадковим кольором при hover */
+    #random-color-section button {
+      margin: .25rem; padding: .5rem 1rem;
+      font-size: 1rem; cursor: pointer;
+      transition: color .2s;
+    }
+
+    /* 6. Підказка при кліку */
+    #tooltip-section { position: relative; }
+    .tooltip {
+      position: absolute;
+      padding: .4rem .6rem;
+      background: #333; color: #fff;
+      border-radius: 4px; font-size: .9rem;
+      pointer-events: none; white-space: nowrap;
+      z-index: 10; opacity: 0;
+      transition: opacity .2s;
+    }
+    .tooltip.show { opacity: 1; }
+
+    /* 7. Дерево з draggable */
+    #tree-section ul {
+      list-style: none; padding-left: 1rem;
+      max-width: 300px; border: 1px solid #ccc;
+    }
+    #tree-section li {
+      padding: .3rem .6rem;
+      border: 1px solid transparent;
+      margin: .2rem 0;
+      cursor: move;
+    }
+    #tree-section li.drag-over {
+      border-color: #007BFF;
+      background: rgba(0,123,255,0.1);
+    }
+
+    /* 8. Resizable текстовий блок */
+    #resize-section {
+      max-width: 400px; margin-top: 1rem;
+    }
+    #resize-box {
+      position: relative;
+      border: 1px solid #666;
+      padding: .5rem;
+      min-width: 100px; min-height: 60px;
+      overflow: auto;
+    }
+    #resize-handle {
+      position: absolute;
+      width: 12px; height: 12px;
+      background: #666;
+      right: 0; bottom: 0;
+      cursor: se-resize;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Домашка: 8 завдань в одному</h1>
+
+  <!-- 1. ФОРМА -->
+  <section id="username-section">
+    <h2>1. Введіть ім’я (без цифр)</h2>
+    <form id="nameForm">
+      <label for="username">Ім’я:</label>
+      <input
+        type="text"
+        id="username"
+        name="username"
+        placeholder="Ім’я Прізвище"
+        pattern="^[A-Za-zА-Яа-яЁёЇїІіЄєҐґ\s'-]+$"
+        title="Ім’я не повинно містити цифр"
+        required
+      />
+      <button type="submit">Надіслати</button>
+    </form>
+  </section>
+
+  <!-- 2. МОДАЛКА -->
+  <section id="modal-section">
+    <h2>2. Модальне вікно</h2>
+    <button id="openModalBtn">Відкрити модалку</button>
+    <div id="overlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal">
+        <h3 id="modalTitle">Привіт з модалки!</h3>
+        <p>Це – вміст діалогу.</p>
+        <button id="closeModalBtn">Закрити</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. ФУТБОЛЬНЕ ПОЛЕ -->
+   <section id="field-section-wrapper">
+    <h2>3. Поле та м’яч (клік → м’яч плавно туди)</h2>
+    <div id="field">
+      <div id="ball"></div>
+    </div>
+  </section>
+
+  <!-- 4. СВІТЛОФОР -->
+  <section id="traffic-section">
+    <h2>4. Світлофор</h2>
+    <div class="traffic-light">
+      <div class="lamp red"></div>
+      <div class="lamp yellow"></div>
+      <div class="lamp green"></div>
+    </div>
+    <button id="nextBtn">NEXT</button>
+  </section>
+
+  <!-- 5. Випадковий колір при hover -->
+  <section id="random-color-section">
+    <h2>5. Hover → випадковий колір тексту</h2>
+    <button>Button A</button>
+    <button>Button B</button>
+    <button>Button C</button>
+  </section>
+
+  <!-- 6. Підказка при кліку -->
+  <section id="tooltip-section">
+    <h2>6. Click → підказка біля кнопки</h2>
+    <button data-tooltip="Tool tip 1">Button 1</button>
+    <button data-tooltip="Tool tip 2">Button 2</button>
+    <button data-tooltip="Tool tip 3">Button 3</button>
+  </section>
+
+  <!-- 7. Дерево з draggable -->
+  <section id="tree-section">
+    <h2>7. Дерево елементів (drag & drop у межах одного рівня)</h2>
+    <ul id="tree">
+      <li draggable="true">This PC
+        <ul>
+          <li draggable="true">Local Disk (C:)
+            <ul>
+              <li draggable="true">Program Files</li>
+              <li draggable="true">Users</li>
+              <li draggable="true">Windows</li>
+            </ul>
+          </li>
+          <li draggable="true">Local Disk (D:)
+            <ul>
+              <li draggable="true">New Folder 1</li>
+              <li draggable="true">New Folder 2</li>
+              <li draggable="true">New Folder 3</li>
+            </ul>
+          </li>
+          <li draggable="true">Local Disk (E:)</li>
+        </ul>
+      </li>
+    </ul>
+    <small>Перетягуйте елементи, щоб змінити порядок в межах поточного списку.</small>
+  </section>
+
+  <!-- 8. Resizable текстовий блок -->
+  <section id="resize-section">
+    <h2>8. Resizable текстовий блок</h2>
+    <div id="resize-box">
+      <p>Це текстовий блок. Потягніть за правий нижній кут, щоб змінити розмір.</p>
+      <div id="resize-handle"></div>
+    </div>
+  </section>
+
+  <script>
+    // 1. ФОРМА
+    const inp = document.getElementById('username'),
+          form = document.getElementById('nameForm');
+    inp.addEventListener('input', () => {
+      inp.value = inp.value.replace(/[0-9]/g, '');
+    });
+    form.addEventListener('submit', e => {
+      if (!inp.checkValidity()) {
+        e.preventDefault();
+        alert(inp.title);
+      } else {
+        e.preventDefault();
+        alert(`Дякую, ${inp.value}!`);
+      }
+    });
+
+    // 2. МОДАЛКА
+    const overlay = document.getElementById('overlay'),
+          openBtn = document.getElementById('openModalBtn'),
+          closeBtn = document.getElementById('closeModalBtn');
+    openBtn.addEventListener('click', ()=> {
+      overlay.style.display = 'flex';
+      closeBtn.focus();
+    });
+    closeBtn.addEventListener('click', ()=> {
+      overlay.style.display = 'none';
+      openBtn.focus();
+    });
+    overlay.addEventListener('click', e => {
+      if (e.target === overlay) {
+        overlay.style.display = 'none';
+        openBtn.focus();
+      }
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key==='Escape' && overlay.style.display==='flex')
+        closeBtn.click();
+    });
+
+    // 3. ФУТБОЛЬНЕ ПОЛЕ ТА М’ЯЧ
+    const field = document.getElementById('field'),
+          ball  = document.getElementById('ball');
+    const radius = 50; // половина розміру м'яча
+    field.addEventListener('click', e => {
+      const rect = field.getBoundingClientRect();
+      let x = e.clientX - rect.left;
+      let y = e.clientY - rect.top;
+      x = Math.max(radius, Math.min(x, rect.width  - radius));
+      y = Math.max(radius, Math.min(y, rect.height - radius));
+      ball.style.left = (x - radius) + 'px';
+      ball.style.top  = (y - radius) + 'px';
+    });
+
+    // 4. СВІТЛОФОР
+    const lamps = document.querySelectorAll('.traffic-light .lamp');
+    let current = 0;
+    document.getElementById('nextBtn').addEventListener('click', () => {
+      lamps.forEach(l => l.classList.remove('active'));
+      lamps[current].classList.add('active');
+      current = (current + 1) % lamps.length;
+    });
+    lamps[0].classList.add('active');
+
+    // 5. ВИПАДКОВИЙ КОЛІР ПРИ HOVER
+    function randColor() {
+      return '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6,'0');
+    }
+    document.querySelectorAll('#random-color-section button')
+      .forEach(btn => {
+        btn.addEventListener('mouseenter', () => {
+          btn.style.color = randColor();
+        });
+      });
+
+    // 6. ПІДКАЗКА ПРИ КЛІКУ
+    document.getElementById('tooltip-section')
+      .addEventListener('click', e => {
+        if (e.target.tagName !== 'BUTTON') return;
+        document.querySelectorAll('.tooltip').forEach(t => t.remove());
+        const tipText = e.target.dataset.tooltip;
+        const rect = e.target.getBoundingClientRect();
+        const tip = document.createElement('div');
+        tip.className = 'tooltip show';
+        tip.textContent = tipText;
+        document.body.append(tip);
+        tip.style.left = `${rect.right + 10 + window.scrollX}px`;
+        tip.style.top  = `${rect.top + window.scrollY}px`;
+        setTimeout(()=> tip.remove(), 2000);
+      });
+
+    // 7. DRAG & DROP ДЕРЕВО
+    let draggedEl = null;
+    document.querySelectorAll('#tree li').forEach(li => {
+      li.addEventListener('dragstart', e => {
+        draggedEl = e.target;
+        e.dataTransfer.effectAllowed = 'move';
+      });
+      li.addEventListener('dragover', e => {
+        if (!draggedEl) return;
+        if (e.target.tagName==='LI'
+            && e.target.parentElement === draggedEl.parentElement) {
+          e.preventDefault();
+          e.target.classList.add('drag-over');
+          e.dataTransfer.dropEffect = 'move';
+        }
+      });
+      li.addEventListener('dragleave', e => {
+        e.target.classList.remove('drag-over');
+      });
+      li.addEventListener('drop', e => {
+        e.preventDefault();
+        const target = e.target;
+        target.classList.remove('drag-over');
+        if (draggedEl && target.parentElement === draggedEl.parentElement) {
+          const parent = target.parentElement;
+          parent.insertBefore(draggedEl, target.nextSibling);
+        }
+      });
+      li.addEventListener('dragend', () => {
+        draggedEl = null;
+        document.querySelectorAll('.drag-over')
+          .forEach(el => el.classList.remove('drag-over'));
+      });
+    });
+
+    // 8. RESIZABLE БЛОК
+    const box = document.getElementById('resize-box'),
+          handle = document.getElementById('resize-handle');
+    handle.addEventListener('mousedown', initResize);
+    function initResize(e) {
+      e.preventDefault();
+      window.addEventListener('mousemove', doResize);
+      window.addEventListener('mouseup', stopResize);
+    }
+    function doResize(e) {
+      const rect = box.getBoundingClientRect();
+      box.style.width  = (e.clientX - rect.left) + 'px';
+      box.style.height = (e.clientY - rect.top)  + 'px';
+    }
+    function stopResize() {
+      window.removeEventListener('mousemove', doResize);
+      window.removeEventListener('mouseup', stopResize);
+    }
+  </script>
+</body>
+</html>

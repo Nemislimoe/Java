@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>Лабораторна</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; }
+  section { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; border-radius: 8px; }
+  h2 { margin-top: 0; }
+  .counter { font-size: 1.5rem; margin: 0 10px; }
+  .color-box { width: 50px; height: 50px; display: inline-block; margin: 5px; cursor: pointer; }
+  .palette { display: flex; gap: 5px; }
+  .comment { border-bottom: 1px solid #ccc; padding: 5px 0; }
+  .suggestions { border: 1px solid #ccc; max-width: 200px; }
+  .suggestions div { padding: 5px; cursor: pointer; }
+  .suggestions div:hover { background: #eee; }
+  .calc { display: grid; grid-template-columns: repeat(4, 50px); gap: 5px; width: max-content; }
+  .calc button { height: 50px; font-size: 1.2rem; }
+  #toTop { position: fixed; bottom: 20px; right: 20px; display: none; padding: 10px; background: #333; color: #fff; border: none; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<!-- 1. Лічильник -->
+<section>
+  <h2>1. Лічильник</h2>
+  <button id="dec">-</button>
+  <span id="count" class="counter">0</span>
+  <button id="inc">+</button>
+</section>
+
+<!-- 2. Кольорові блоки -->
+<section>
+  <h2>2. Кольорові блоки</h2>
+  <button id="addBlock">Додати блок</button>
+  <div id="blocks"></div>
+</section>
+
+<!-- 3. Палітра кольорів -->
+<section>
+  <h2>3. Палітра кольорів</h2>
+  <div class="palette" id="palette">
+    <div class="color-box" data-color="red" style="background:red"></div>
+    <div class="color-box" data-color="green" style="background:green"></div>
+    <div class="color-box" data-color="blue" style="background:blue"></div>
+    <div class="color-box" data-color="orange" style="background:orange"></div>
+  </div>
+  <p id="colorText">Цей текст змінює колір</p>
+</section>
+
+<!-- 4. Коментарі -->
+<section>
+  <h2>4. Коментарі</h2>
+  <form id="commentForm">
+    <input type="text" id="userName" placeholder="Ім’я" required>
+    <textarea id="commentText" placeholder="Коментар" required></textarea>
+    <button type="submit">Додати</button>
+  </form>
+  <div id="comments"></div>
+</section>
+
+<!-- 5. Підказки для країн -->
+<section>
+  <h2>5. Підказки для країн</h2>
+  <input type="text" id="countryInput" placeholder="Введіть країну">
+  <div id="suggestions" class="suggestions"></div>
+</section>
+
+<!-- 6. Калькулятор -->
+<section>
+  <h2>6. Калькулятор</h2>
+  <input type="text" id="calcDisplay" readonly>
+  <div class="calc" id="calcButtons">
+    <button>7</button><button>8</button><button>9</button><button>/</button>
+    <button>4</button><button>5</button><button>6</button><button>*</button>
+    <button>1</button><button>2</button><button>3</button><button>-</button>
+    <button>0</button><button>.</button><button>=</button><button>+</button>
+  </div>
+</section>
+
+<!-- 7. Кнопка вгору -->
+<button id="toTop">Вгору</button>
+
+<script>
+  // 1. Лічильник
+  let count = 0;
+  document.getElementById('inc').onclick = () => { document.getElementById('count').textContent = ++count; };
+  document.getElementById('dec').onclick = () => { document.getElementById('count').textContent = --count; };
+
+  // 2. Кольорові блоки
+  document.getElementById('addBlock').onclick = () => {
+    const colors = ['red','green','blue','orange','purple'];
+    const div = document.createElement('div');
+    div.className = 'color-box';
+    div.style.background = colors[Math.floor(Math.random()*colors.length)];
+    div.onclick = () => div.remove();
+    document.getElementById('blocks').appendChild(div);
+  };
+
+  // 3. Палітра кольорів
+  document.getElementById('palette').onclick = e => {
+    if (e.target.dataset.color) {
+      document.getElementById('colorText').style.color = e.target.dataset.color;
+    }
+  };
+
+  // 4. Коментарі
+  document.getElementById('commentForm').onsubmit = e => {
+    e.preventDefault();
+    const name = document.getElementById('userName').value.trim();
+    const text = document.getElementById('commentText').value.trim();
+    if (name && text) {
+      const div = document.createElement('div');
+      div.className = 'comment';
+      div.innerHTML = `<strong>${name}</strong> (${new Date().toLocaleString()}):<br>${text}`;
+      document.getElementById('comments').prepend(div);
+      e.target.reset();
+    }
+  };
+
+  // 5. Підказки для країн
+  const countries = ["Україна","Польща","Німеччина","Франція","Італія","Іспанія","Канада","США","Японія","Китай","Бразилія","Аргентина"];
+  const countryInput = document.getElementById('countryInput');
+  const suggestions = document.getElementById('suggestions');
+  countryInput.oninput = () => {
+    const val = countryInput.value.toLowerCase();
+    suggestions.innerHTML = '';
+    if (val) {
+      countries.filter(c => c.toLowerCase().includes(val)).slice(0,10).forEach(c => {
+        const div = document.createElement('div');
+        div.textContent = c;
+        div.onclick = () => { countryInput.value = c; suggestions.innerHTML = ''; };
+        suggestions.appendChild(div);
+      });
+    }
+  };
+
+  // 6. Калькулятор
+  const display = document.getElementById('calcDisplay');
+  document.getElementById('calcButtons').onclick = e => {
+    if (e.target.tagName === 'BUTTON') {
+      const val = e.target.textContent;
+      if (val === '=') {
+        try { display.value = eval(display.value) || ''; } catch { display.value = 'Error'; }
+      } else {
+        display.value += val;
+      }
+    }
+  };
+
+  // 7. Кнопка вгору
+  const toTop = document.getElementById('toTop');
+  window.onscroll = () => {
+    toTop.style.display = window.scrollY > 100 ? 'block' : 'none';
+  };
+  toTop.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // Завдання 1: Масив з 10 випадкових чисел
+        let arr1 = [];
+        for (let i = 0; i < 10; i++) {
+        arr1.push(Math.floor(Math.random() * 100) + 1);
+        }
+
+        function printArray(a) {
+        alert("Масив: " + a.join(", "));
+        }
+
+        function printEvenElements(a) {
+        let evens = a.filter(n => n % 2 === 0);
+        alert("Парні елементи: " + evens.join(", "));
+        }
+
+        function sumArray(a) {
+        return a.reduce((sum, n) => sum + n, 0);
+        }
+
+        function maxElement(a) {
+        return Math.max(...a);
+        }
+
+        function addElement(a, index, el) {
+        a.splice(index, 0, el);
+        return a;
+        }
+
+        function removeElement(a, index) {
+        a.splice(index, 1);
+        return a;
+        }
+
+        printArray(arr1);
+        printEvenElements(arr1);
+        alert("Сума: " + sumArray(arr1));
+        alert("Максимальний елемент: " + maxElement(arr1));
+        addElement(arr1, 3, 999);
+        alert("Після додавання: " + arr1.join(", "));
+        removeElement(arr1, 5);
+        alert("Після видалення: " + arr1.join(", "));
+
+        // Завдання 2: Масив з 5 випадкових чисел
+        let arr2 = [];
+        for (let i = 0; i < 5; i++) {
+        arr2.push(Math.floor(Math.random() * 100) + 1);
+        }
+
+        function mergeUnique(a, b) {
+        return [...new Set(a.concat(b))];
+        }
+
+        function commonElements(a, b) {
+        return [...new Set(a.filter(item => b.indexOf(item) !== -1))];
+        }
+
+        function differenceElements(a, b) {
+        return [...new Set(a.filter(item => b.indexOf(item) === -1))];
+        }
+
+        alert("Масив 1: " + arr1.join(", "));
+        alert("Масив 2: " + arr2.join(", "));
+        alert("Об’єднаний без повторень: " + mergeUnique(arr1, arr2).join(", "));
+        alert("Спільні елементи: " + commonElements(arr1, arr2).join(", "));
+        alert("Елементи з першого, яких нема у другому: " + differenceElements(arr1, arr2).join(", "));
+
+        // Завдання 3: Масив фруктів, відсортований за алфавітом
+        let fruits = ["Банан", "Яблуко", "Апельсин", "Мандарин", "Ківі", "Груша"];
+        fruits.sort((a, b) => a.localeCompare(b, "uk", { sensitivity: "base" }));
+
+        function displayFruitsList(arr) {
+        let out = "<ul>";
+        for (let item of arr) {
+            out += "<li>" + item + "</li>";
+        }
+        out += "</ul>";
+        document.write(out);
+        }
+
+        function searchFruit(arr, fruitName) {
+        let search = fruitName.toLowerCase();
+        for (let i = 0; i < arr.length; i++) {
+            if (arr[i].toLowerCase() === search) return i;
+        }
+        return -1;
+        }
+
+        displayFruitsList(fruits);
+        document.write("<p>Індекс 'яблуко': " + searchFruit(fruits, "яблуко") + "</p>");
+    </script>
+</body>
+</html>

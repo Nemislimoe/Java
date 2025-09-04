@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // Створення прямокутника
+        let rectangle = {
+        topLeft: { x: 2, y: 3 },        // Ліва верхня точка
+        bottomRight: { x: 10, y: 8 }      // Права нижня точка
+        };
+
+        // 1. Функція для виведення інформації про прямокутник
+        function printRectangleInfo(rect) {
+        alert(
+            "Ліва верхня точка: (" + rect.topLeft.x + ", " + rect.topLeft.y + ")\n" +
+            "Права нижня точка: (" + rect.bottomRight.x + ", " + rect.bottomRight.y + ")"
+        );
+        }
+
+        // 2. Функція, що повертає ширину прямокутника
+        function getRectangleWidth(rect) {
+        return rect.bottomRight.x - rect.topLeft.x;
+        }
+
+        // 3. Функція, що повертає висоту прямокутника
+        function getRectangleHeight(rect) {
+        return rect.bottomRight.y - rect.topLeft.y;
+        }
+
+        // 4. Функція, що повертає площу прямокутника
+        function getRectangleArea(rect) {
+        return getRectangleWidth(rect) * getRectangleHeight(rect);
+        }
+
+        // 5. Функція, що повертає периметр прямокутника
+        function getRectanglePerimeter(rect) {
+        return 2 * (getRectangleWidth(rect) + getRectangleHeight(rect));
+        }
+
+        // 6. Функція для зміни ширини прямокутника
+        function changeRectangleWidth(rect, delta) {
+        let currentWidth = getRectangleWidth(rect);
+        let newWidth = currentWidth + delta;
+        rect.bottomRight.x = rect.topLeft.x + newWidth;
+        return newWidth;
+        }
+
+        // 7. Функція для зміни висоти прямокутника
+        function changeRectangleHeight(rect, delta) {
+        let currentHeight = getRectangleHeight(rect);
+        let newHeight = currentHeight + delta;
+        rect.bottomRight.y = rect.topLeft.y + newHeight;
+        return newHeight;
+        }
+
+        // 8. Функція для одночасної зміни ширини та висоти прямокутника
+        function changeRectangleSize(rect, deltaWidth, deltaHeight) {
+        changeRectangleWidth(rect, deltaWidth);
+        changeRectangleHeight(rect, deltaHeight);
+        }
+
+        // 9. Функція для зміщення прямокутника по осі X
+        function shiftRectangleX(rect, deltaX) {
+        rect.topLeft.x += deltaX;
+        rect.bottomRight.x += deltaX;
+        }
+
+        // 10. Функція для зміщення прямокутника по осі Y
+        function shiftRectangleY(rect, deltaY) {
+        rect.topLeft.y += deltaY;
+        rect.bottomRight.y += deltaY;
+        }
+
+        // 11. Функція для зміщення прямокутника по обом осям (X та Y)
+        function shiftRectangle(rect, deltaX, deltaY) {
+        shiftRectangleX(rect, deltaX);
+        shiftRectangleY(rect, deltaY);
+        }
+
+        // 12. Функція для перевірки, чи знаходиться точка всередині прямокутника
+        function isPointInsideRectangle(rect, x, y) {
+        return (x >= rect.topLeft.x && x <= rect.bottomRight.x &&
+                y >= rect.topLeft.y && y <= rect.bottomRight.y);
+        }
+
+        // Виведення початкової інформації про прямокутник
+        printRectangleInfo(rectangle);
+        alert("Ширина: " + getRectangleWidth(rectangle));
+        alert("Висота: " + getRectangleHeight(rectangle));
+        alert("Площа: " + getRectangleArea(rectangle));
+        alert("Периметр: " + getRectanglePerimeter(rectangle));
+
+        // Зміна розміру: збільшимо ширину на 5 та висоту на 3
+        changeRectangleWidth(rectangle, 5);
+        changeRectangleHeight(rectangle, 3);
+        alert("Після зміни розмірів:");
+        printRectangleInfo(rectangle);
+        alert("Нова площа: " + getRectangleArea(rectangle));
+
+        // Зсув прямокутника: зрушимо по осі X на -2 та по осі Y на 4
+        shiftRectangle(rectangle, -2, 4);
+        alert("Після зсуву:");
+        printRectangleInfo(rectangle);
+
+        // Перевірка, чи знаходиться точка всередині прямокутника
+        // Наприклад, перевіримо для точки (5, 7)
+        let ptX = 5;
+        let ptY = 7;
+        alert("Чи точка (" + ptX + ", " + ptY + ") знаходиться всередині прямокутника? " +
+            (isPointInsideRectangle(rectangle, ptX, ptY) ? "Так" : "Ні"));
+    </script>
+</body>
+</html>

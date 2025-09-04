@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // Завдання 1: Список покупок
+        let shoppingList = [
+        { product: "Хліб", quantity: 2, purchased: false },
+        { product: "Молоко", quantity: 1, purchased: true },
+        { product: "Яйця", quantity: 12, purchased: false }
+        ];
+
+        function displayShoppingList(list) {
+        let output = "Список покупок:\n";
+        list.forEach(item => { if (!item.purchased) output += item.product + " (" + item.quantity + " шт.) - не куплено\n"; });
+        list.forEach(item => { if (item.purchased) output += item.product + " (" + item.quantity + " шт.) - куплено\n"; });
+        alert(output);
+        }
+
+        function addPurchase(list, productName, quantity) {
+        let item = list.find(el => el.product.toLowerCase() === productName.toLowerCase());
+        if (item) { item.quantity += quantity; }
+        else { list.push({ product: productName, quantity: quantity, purchased: false }); }
+        }
+
+        function purchaseProduct(list, productName) {
+        let item = list.find(el => el.product.toLowerCase() === productName.toLowerCase());
+        if (item) { item.purchased = true; }
+        else { alert("Продукт " + productName + " не знайдено."); }
+        }
+
+        displayShoppingList(shoppingList);
+        addPurchase(shoppingList, "Хліб", 1); // збільшуємо кількість, якщо продукт є
+        addPurchase(shoppingList, "Сир", 2);
+        purchaseProduct(shoppingList, "Яйця");
+        displayShoppingList(shoppingList);
+
+        // Завдання 2: Чек у магазині
+        let receipt = [
+        { name: "Хліб", quantity: 2, price: 20 },
+        { name: "Молоко", quantity: 1, price: 30 },
+        { name: "Яйця", quantity: 12, price: 3 }
+        ];
+
+        function displayReceipt(arr) {
+        let str = "Чек:\n";
+        arr.forEach(item => {
+            str += item.name + " - " + item.quantity + " шт. x " + item.price + " = " + (item.quantity * item.price) + " грн\n";
+        });
+        alert(str);
+        }
+
+        function totalPurchase(arr) {
+        return arr.reduce((sum, item) => sum + item.quantity * item.price, 0);
+        }
+
+        function mostExpensivePurchase(arr) {
+        if (!arr.length) return null;
+        let maxItem = arr[0];
+        arr.forEach(item => { if (item.quantity * item.price > maxItem.quantity * maxItem.price) maxItem = item; });
+        return maxItem;
+        }
+
+        function averagePrice(arr) {
+        let totalCost = arr.reduce((sum, item) => sum + item.quantity * item.price, 0);
+        let totalQuantity = arr.reduce((sum, item) => sum + item.quantity, 0);
+        return totalCost / totalQuantity;
+        }
+
+        // Демонстрація
+        displayReceipt(receipt);
+        alert("Загальна сума: " + totalPurchase(receipt) + " грн");
+        let exp = mostExpensivePurchase(receipt);
+        if (exp) alert("Найдорожча покупка: " + exp.name + " (" + (exp.quantity * exp.price) + " грн)");
+        alert("Середня ціна за одиницю: " + averagePrice(receipt).toFixed(2) + " грн");
+
+        // Завдання 3: CSS-стилі
+        let cssStyles = [
+        { name: "color", value: "blue" },
+        { name: "font-size", value: "20px" },
+        { name: "text-align", value: "center" },
+        { name: "text-decoration", value: "underline" }
+        ];
+
+        function displayStyledText(styles, text) {
+        let styleStr = "";
+        styles.forEach(s => { styleStr += s.name + ":" + s.value + "; "; });
+        document.write("<p style='" + styleStr + "'>" + text + "</p>");
+        }
+
+        // Демонстрація
+        displayStyledText(cssStyles, "Це приклад тексту, відформатованого за допомогою CSS-стилів.");
+
+        // Завдання 4: Аудиторії академії
+        let auditoriums = [
+        { name: "Аудиторія 101", seats: 15, faculty: "Фізико-математичний" },
+        { name: "Аудиторія 102", seats: 10, faculty: "Правничий" },
+        { name: "Аудиторія 103", seats: 20, faculty: "Фізико-математичний" },
+        { name: "Аудиторія 104", seats: 12, faculty: "Історичний" }
+        ];
+
+        function displayAuditoriums(arr) {
+        let out = "Аудиторії:\n";
+        arr.forEach(aud => { out += aud.name + " - " + aud.seats + " місць, " + aud.faculty + "\n"; });
+        alert(out);
+        }
+
+        function displayAuditoriumsByFaculty(arr, facultyName) {
+        let filtered = arr.filter(aud => aud.faculty.toLowerCase() === facultyName.toLowerCase());
+        let out = "Аудиторії для факультету " + facultyName + ":\n";
+        filtered.forEach(aud => { out += aud.name + " - " + aud.seats + " місць\n"; });
+        alert(out);
+        }
+
+        function displayAuditoriumsForGroup(arr, group) {
+        let filtered = arr.filter(aud => aud.faculty.toLowerCase() === group.faculty.toLowerCase() && aud.seats >= group.studentCount);
+        let out = "Аудиторії для групи " + group.name + " (" + group.studentCount + " студентів, " + group.faculty + "):\n";
+        filtered.forEach(aud => { out += aud.name + " - " + aud.seats + " місць\n"; });
+        alert(out);
+        }
+
+        function sortAuditoriumsBySeats(arr) {
+        return arr.slice().sort((a, b) => a.seats - b.seats);
+        }
+
+        function sortAuditoriumsByName(arr) {
+        return arr.slice().sort((a, b) => a.name.localeCompare(b.name));
+        }
+
+        // Демонстрація
+        displayAuditoriums(auditoriums);
+        displayAuditoriumsByFaculty(auditoriums, "Фізико-математичний");
+        let group = { name: "Група А", studentCount: 12, faculty: "Фізико-математичний" };
+        displayAuditoriumsForGroup(auditoriums, group);
+        alert("Аудиторії, відсортовані за кількістю місць:\n" + sortAuditoriumsBySeats(auditoriums).map(a => a.name + " (" + a.seats + ")").join(", "));
+        alert("Аудиторії, відсортовані за назвою:\n" + sortAuditoriumsByName(auditoriums).map(a => a.name).join(", "));
+    </script>
+</body>
+</html>

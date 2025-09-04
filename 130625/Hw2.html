@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // 1.
+        let userAge = Number(prompt("Введіть свій вік:"));
+        if (userAge >= 0 && userAge < 12) {
+            alert("Ви дитина.");
+        } else if (userAge >= 12 && userAge < 18) {
+            alert("Ви підліток.");
+        } else if (userAge >= 18 && userAge < 60) {
+            alert("Ви дорослий.");
+        } else if (userAge >= 60) {
+            alert("Ви пенсіонер.");
+        } else {
+            alert("Некоректно введені дані.");
+        }
+
+        // 2.
+        let digitInput = Number(prompt("Введіть число від 0 до 9:"));
+        let specialSymbol;
+        switch (digitInput) {
+            case 0: specialSymbol = ")"; break;
+            case 1: specialSymbol = "!"; break;
+            case 2: specialSymbol = "@"; break;
+            case 3: specialSymbol = "#"; break;
+            case 4: specialSymbol = "$"; break;
+            case 5: specialSymbol = "%"; break;
+            case 6: specialSymbol = "^"; break;
+            case 7: specialSymbol = "&"; break;
+            case 8: specialSymbol = "*"; break;
+            case 9: specialSymbol = "("; break;
+            default: specialSymbol = "Некоректне число"; break;
+        }
+        alert("Спеціальний символ: " + specialSymbol);
+
+        // 3.
+        let threeDigitNum = Number(prompt("Введіть тризначне число:"));
+        let hundredDigit = Math.floor(threeDigitNum / 100);
+        let tenDigit = Math.floor((threeDigitNum % 100) / 10);
+        let unitDigit = threeDigitNum % 10;
+        if (hundredDigit === tenDigit || tenDigit === unitDigit || hundredDigit === unitDigit) {
+            alert("У числі є повторювані цифри.");
+        } else {
+            alert("У числі немає повторюваних цифр.");
+        }
+
+        // 4.
+        let year = Number(prompt("Введіть рік:"));
+        if ((year % 400 === 0) || (year % 4 === 0 && year % 100 !== 0)) {
+            alert(year + " є високосним роком.");
+        } else {
+            alert(year + " не є високосним роком.");
+        }
+
+        // 5.
+        let fiveDigitStr = prompt("Введіть п'ятирозрядне число:");
+        if (fiveDigitStr.length === 5 && fiveDigitStr[0] === fiveDigitStr[4] && fiveDigitStr[1] === fiveDigitStr[3]) {
+            alert("Число є паліндромом.");
+        } else {
+            alert("Число не є паліндромом.");
+        }
+
+        // 6.
+        let usdAmount = Number(prompt("Введіть суму в USD:"));
+        let targetCurrency = prompt("В яку валюту конвертувати? (EUR, UAN, AZN)").toUpperCase();
+        let convertedValue;
+        switch (targetCurrency) {
+            case "EUR":
+                convertedValue = usdAmount * 0.92;
+                break;
+            case "UAN":
+                convertedValue = usdAmount * 36.6;
+                break;
+            case "AZN":
+                convertedValue = usdAmount * 1.7;
+                break;
+            default:
+                alert("Невірна валюта");
+                convertedValue = null;
+                break;
+        }
+        if (convertedValue !== null) {
+            alert(usdAmount + " USD = " + convertedValue.toFixed(2) + " " + targetCurrency);
+        }
+
+        // 7.
+        let purchaseSum = Number(prompt("Введіть суму покупки:"));
+        let discount;
+        if (purchaseSum >= 200 && purchaseSum < 300) {
+            discount = 0.03;
+        } else if (purchaseSum >= 300 && purchaseSum < 500) {
+            discount = 0.05;
+        } else if (purchaseSum >= 500) {
+            discount = 0.07;
+        } else {
+            discount = 0;
+        }
+        let discountedTotal = purchaseSum - (purchaseSum * discount);
+        alert("Сума до сплати зі знижкою: " + discountedTotal.toFixed(2));
+
+        // 8.
+        let circleLength = Number(prompt("Введіть довжину кола:"));
+        let squarePerimeter = Number(prompt("Введіть периметр квадрата:"));
+        let squareSide = squarePerimeter / 4;
+        let circleDiameter = circleLength / Math.PI;
+        if (circleDiameter <= squareSide) {
+            alert("Коло може поміститися у квадрат.");
+        } else {
+            alert("Коло не поміститься у квадрат.");
+        }
+
+        // 9.
+        let score = 0;
+        let answer1 = prompt("Питання 1: Яка столиця України?\n(a) Київ\n(b) Львів\n(c) Одеса").toLowerCase();
+        score += (answer1 === "a") ? 2 : 0;
+        let answer2 = prompt("Питання 2: Скільки кольорів у прапорі України?\n(a) 2\n(b) 3\n(c) 4").toLowerCase();
+        score += (answer2 === "a") ? 2 : 0;
+        let answer3 = prompt("Питання 3: Яка річка протікає через Київ?\n(a) Дністер\n(b) Дніпро\n(c) Південний Буг").toLowerCase();
+        score += (answer3 === "b") ? 2 : 0;
+        alert("Ви набрали " + score + " балів.");
+
+        // 10.
+        let inputDay = Number(prompt("Введіть день:"));
+        let inputMonth = Number(prompt("Введіть місяць:"));
+        let inputYear = Number(prompt("Введіть рік:"));
+
+        function isLeapYear(y) {
+            return (y % 400 === 0) || (y % 4 === 0 && y % 100 !== 0);
+        }
+
+        let daysInMonth;
+        switch (inputMonth) {
+            case 2:
+                daysInMonth = isLeapYear(inputYear) ? 29 : 28;
+                break;
+            case 4:
+            case 6:
+            case 9:
+            case 11:
+                daysInMonth = 30;
+                break;
+            default:
+                daysInMonth = 31;
+        }
+
+        if (inputDay < daysInMonth) {
+            inputDay++;
+        } else if (inputDay === daysInMonth) {
+            inputDay = 1;
+            if (inputMonth < 12) {
+                inputMonth++;
+            } else {
+                inputMonth = 1;
+                inputYear++;
+            }
+        }
+        alert("Наступна дата: " + inputDay + "/" + inputMonth + "/" + inputYear);
+    </script>
+</body>
+</html>

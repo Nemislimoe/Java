@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // 1. Функція, що приймає 2 числа та повертає менше з них
+        function getMin(a, b) {
+        return (a < b) ? a : b;
+        }
+
+        // 2. Функція, що зводить передане число у вказаний ступінь
+        function raiseToPower(base, exponent) {
+        let result = 1;
+        for (let i = 0; i < exponent; i++) {
+            result *= base;
+        }
+        return result;
+        }
+
+        // 3. Функція, що приймає 2 числа та знак операції (+, -, *, /), 
+        //    підраховує приклад і повертає результат
+        function calculate(a, b, operator) {
+        switch (operator) {
+            case '+': return a + b;
+            case '-': return a - b;
+            case '*': return a * b;
+            case '/': return (b !== 0) ? a / b : "Ділення на 0!";
+            default: return "Невідомий оператор";
+        }
+        }
+
+        // 4. Функція, що перевіряє, чи є передане число простим
+        function isPrime(n) {
+        if (n < 2) return false;
+        for (let i = 2, sqrt = Math.sqrt(n); i <= sqrt; i++) {
+            if (n % i === 0) return false;
+        }
+        return true;
+        }
+
+        // 5. Функція, що приймає число і виводить таблицю множення для цього числа
+        function multiplicationTable(n) {
+        let output = "Таблиця множення для " + n + ":\n";
+        for (let i = 1; i <= 10; i++) {
+            output += n + " x " + i + " = " + (n * i) + "\n";
+        }
+        alert(output);
+        }
+
+        // 6. Функція, що реалізує роботу оператора % без використання самого %
+        //    Функція приймає 2 параметри та повертає залишок від ділення першого на другий
+        function myMod(dividend, divisor) {
+        if (divisor === 0) return NaN;
+        let remainder = dividend;
+        while (remainder >= divisor) {
+            remainder = remainder - divisor;
+        }
+        return remainder;
+        }
+
+        // 7. Функція, що приймає від 1 до 5 чисел і повертає їх суму
+        function sumNumbers(...nums) {
+        let sum = 0;
+        for (let num of nums) {
+            sum += num;
+        }
+        return sum;
+        }
+
+        // 8. Функція, що приймає від 1 до 5 чисел і повертає більше з них
+        function maxNumber(...nums) {
+        if (nums.length === 0) return undefined;
+        let max = nums[0];
+        for (let num of nums) {
+            if (num > max) max = num;
+        }
+        return max;
+        }
+
+        // 9. Функція, що виводить усі парні або непарні числа у вказаному діапазоні
+        //    Третій параметр (boolean): true – парні, false – непарні
+        function printEvenOdd(min, max, isEven) {
+        let result = "";
+        for (let i = min; i <= max; i++) {
+            if (isEven) {
+            if (i % 2 === 0) result += i + " ";
+            } else {
+            if (i % 2 !== 0) result += i + " ";
+            }
+        }
+        alert(result);
+        }
+
+        // 10. Функція, що приймає дату (день, місяць, рік) і повертає дату наступного дня 
+        //     у вигляді рядка "день.місяць.рік". Перевірку на високосний рік реалізовано окремою функцією
+        function isLeapYear(year) {
+        return (year % 400 === 0) || (year % 4 === 0 && year % 100 !== 0);
+        }
+
+        function getNextDate(day, month, year) {
+        let daysInMonth;
+        if (month === 2) {
+            daysInMonth = isLeapYear(year) ? 29 : 28;
+        } else if ([4, 6, 9, 11].includes(month)) {
+            daysInMonth = 30;
+        } else {
+            daysInMonth = 31;
+        }
+
+        if (day < daysInMonth) {
+            day++;
+        } else {
+            day = 1;
+            if (month < 12) {
+            month++;
+            } else {
+            month = 1;
+            year++;
+            }
+        }
+        return day + "." + month + "." + year;
+        }
+
+        // Завдання 1: Менше з двох чисел
+        alert("Менше зі значень 10 та 20: " + getMin(10, 20));
+
+        // Завдання 2: Зведення числа у ступінь
+        alert("3 у ступені 4: " + raiseToPower(3, 4));
+
+        // Завдання 3: Обчислення прикладу
+        alert("Обчислення: 8 * 3 = " + calculate(8, 3, '*'));
+
+        // Завдання 4: Перевірка простоти числа
+        alert("Чи є число 17 простим? " + isPrime(17));
+
+        // Завдання 5: Таблиця множення для чисел від 2 до 9
+        for (let n = 2; n <= 9; n++) {
+        multiplicationTable(n);
+        }
+
+        // Завдання 6: Реалізація операції взяття залишку
+        alert("Залишок від ділення 17 на 5 (без %): " + myMod(17, 5));
+
+        // Завдання 7: Сума чисел
+        alert("Сума чисел 1, 2, 3, 4, 5: " + sumNumbers(1, 2, 3, 4, 5));
+
+        // Завдання 8: Більше з чисел
+        alert("Більше з чисел 4, 17, 9, 23, 11: " + maxNumber(4, 17, 9, 23, 11));
+
+        // Завдання 9: Виведення парних чисел у діапазоні від 1 до 20 (isEven = true)
+        printEvenOdd(1, 20, true);
+        printEvenOdd(1, 20, false);
+
+        // Завдання 10: Обчислення наступної дати.
+        alert("Наступна дата після 28.2.2020: " + getNextDate(28, 2, 2020));
+    </script>
+</body>
+</html>

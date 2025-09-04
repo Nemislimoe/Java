@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // 1. 
+        let num = Number(prompt("Введіть число для зведення в квадрат:"));
+        let squared = num ** 2;
+        alert("Квадрат числа " + num + " дорівнює " + squared + ".");
+
+        // 2. 
+        let number1 = Number(prompt("Введіть перше число:"));
+        let number2 = Number(prompt("Введіть друге число:"));
+        let average = (number1 + number2) / 2;
+        alert("Середнє арифметичне чисел " + number1 + " і " + number2 + " дорівнює " + average + ".");
+
+        // 3. 
+        let side = Number(prompt("Введіть довжину сторони квадрата:"));
+        let squareArea = side ** 2;
+        alert("Площа квадрата зі стороною " + side + " дорівнює " + squareArea + ".");
+
+        // 4. 
+        const KM_TO_MILES = 0.621371;
+        let kilometers = Number(prompt("Введіть відстань в кілометрах:"));
+        let miles = kilometers * KM_TO_MILES;
+        alert(kilometers + " км = " + miles.toFixed(2) + " миль.");
+
+        // 5. 
+        let calcNum1 = Number(prompt("Введіть перше число для калькулятора:"));
+        let calcNum2 = Number(prompt("Введіть друге число для калькулятора:"));
+        let sum = calcNum1 + calcNum2;
+        let diff = calcNum1 - calcNum2;
+        let product = calcNum1 * calcNum2;
+        let quotient = (calcNum2 !== 0) ? calcNum1 / calcNum2 : "Ділення на нуль неможливе";
+        alert(
+        "Результати обчислень:\n" +
+        calcNum1 + " + " + calcNum2 + " = " + sum + "\n" +
+        calcNum1 + " - " + calcNum2 + " = " + diff + "\n" +
+        calcNum1 + " * " + calcNum2 + " = " + product + "\n" +
+        calcNum1 + " / " + calcNum2 + " = " + quotient
+        );
+
+        // 6. 
+        let a = Number(prompt("Введіть значення a для рівняння a * x + b = 0:"));
+        let b = Number(prompt("Введіть значення b для рівняння a * x + b = 0:"));
+        if (a !== 0) {
+        let x = -b / a;
+        alert("Розв'язок рівняння: x = " + x);
+        } else {
+        alert("Неможливо розв'язати рівняння, якщо a = 0.");
+        }
+
+        // 7. 
+        let currentHours = Number(prompt("Введіть поточні години (0-23):"));
+        let currentMinutes = Number(prompt("Введіть поточні хвилини (0-59):"));
+        let totalCurrentMins = currentHours * 60 + currentMinutes;
+        let totalDayMinutes = 24 * 60;
+        let remainingMinutes = totalDayMinutes - totalCurrentMins;
+        let remainingHours = Math.floor(remainingMinutes / 60);
+        let remainingMins = remainingMinutes % 60;
+        alert("До наступного дня залишилося " + remainingHours + " годин та " + remainingMins + " хвилин.");
+
+        // 8. 
+        let threeDigitNum = Number(prompt("Введіть тризначне число:"));
+        let secondDigit = Math.floor((threeDigitNum % 100) / 10); 
+        alert("Друга цифра числа " + threeDigitNum + " дорівнює " + secondDigit + ".");
+
+        // 9. 
+        let fiveDigitNum = Number(prompt("Введіть п'ятизначне число:"));
+        let lastDigit = fiveDigitNum % 10;
+        let remainingPart = Math.floor(fiveDigitNum / 10);
+        let newNumber = lastDigit * 10000 + remainingPart;
+        alert("Новий номер після переміщення останньої цифри на початок: " + newNumber);
+
+        // 10. 
+        let sales = Number(prompt("Введіть суму продажу за місяць:"));
+        let salary = 250 + 0.1 * sales;
+        alert("Зарплата працівника становить $" + salary.toFixed(2));
+    </script>
+</body>
+</html>
