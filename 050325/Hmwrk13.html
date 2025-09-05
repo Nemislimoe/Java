@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>Hmwrk13</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; }
+  section { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; border-radius: 8px; }
+  h2 { margin-top: 0; }
+  label { display: block; margin-top: 8px; }
+  input, textarea, select, button { margin-top: 4px; padding: 6px; }
+  .message { border-bottom: 1px solid #ddd; padding: 5px 0; }
+  .seat { width: 30px; height: 30px; border: 1px solid #ccc; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; margin: 2px; }
+  .seat.selected { background: lightgreen; }
+</style>
+</head>
+<body>
+
+<h1>JS HW13 — Завдання 1–6</h1>
+
+<!-- Завдання 1 -->
+<section>
+  <h2>1. Форум</h2>
+  <div id="forumMessages"></div>
+  <form id="forumForm">
+    <label>Ваше ім'я: <input type="text" id="forumName" required></label>
+    <label>Повідомлення: <textarea id="forumText" required></textarea></label>
+    <button type="submit">Надіслати</button>
+  </form>
+</section>
+
+<!-- Завдання 2 -->
+<section>
+  <h2>2. Тест</h2>
+  <div id="testContainer"></div>
+  <button id="finishTest">Завершити</button>
+  <p id="testResult"></p>
+</section>
+
+<!-- Завдання 3 -->
+<section>
+  <h2>3. Стилізований текст</h2>
+  <form id="styleForm">
+    <label><input type="checkbox" name="bold"> Жирний</label>
+    <label><input type="checkbox" name="underline"> Підкреслений</label>
+    <label><input type="checkbox" name="italic"> Курсив</label>
+    <label>Вирівнювання:
+      <input type="radio" name="align" value="left" checked> Ліворуч
+      <input type="radio" name="align" value="right"> Праворуч
+      <input type="radio" name="align" value="center"> По центру
+      <input type="radio" name="align" value="justify"> По ширині
+    </label>
+    <label>Текст: <textarea name="text" required></textarea></label>
+    <button type="submit">Показати</button>
+  </form>
+  <div id="styledOutput"></div>
+</section>
+
+<!-- Завдання 4 -->
+<section>
+  <h2>4. Замовлення книги</h2>
+  <form id="bookForm">
+    <label>Книга:
+      <select id="bookTitle">
+        <option>Learning JavaScript</option>
+        <option>You Don't Know JS: Scope & Closures</option>
+        <option>JavaScript and JQuery</option>
+      </select>
+    </label>
+    <label>Кількість: <input type="number" id="bookQty" min="1" value="1"></label>
+    <label>Ім'я: <input type="text" id="custName" required></label>
+    <label>Дата доставки: <input type="date" id="deliveryDate" required></label>
+    <label>Адреса: <input type="text" id="deliveryAddr" required></label>
+    <label>Коментар: <textarea></textarea></label>
+    <button type="submit">Замовити</button>
+  </form>
+  <p id="bookResult"></p>
+</section>
+
+<!-- Завдання 5 -->
+<section>
+  <h2>5. Відмітка присутності</h2>
+  <form id="attendanceForm">
+    <label>Група:
+      <select id="groupSelect">
+        <option>Group 1</option>
+        <option>Group 2</option>
+      </select>
+    </label>
+    <label>Пара: <input type="number" id="lessonNum" min="1" required></label>
+    <label>Тема: <input type="text" id="lessonTopic" required></label>
+    <div id="studentsList"></div>
+    <button type="submit">Зберегти</button>
+  </form>
+  <pre id="attendanceResult"></pre>
+</section>
+
+<!-- Завдання 6 -->
+<section>
+  <h2>6. Бронювання квитків</h2>
+  <form id="ticketForm">
+    <label>Напрямок:
+      <select id="direction">
+        <option>Odessa - Lviv</option>
+        <option>Kyiv - Kharkiv</option>
+      </select>
+    </label>
+    <label>Дата: <input type="date" id="tripDate" required></label>
+    <button type="button" id="searchSeats">Пошук</button>
+  </form>
+  <div id="seatsContainer"></div>
+  <button id="bookSeats">Забронювати</button>
+  <pre id="ticketsList"></pre>
+</section>
+
+<script>
+// Завдання 1
+document.getElementById('forumForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const name = forumName.value.trim();
+  const text = forumText.value.trim();
+  const time = new Date().toLocaleTimeString();
+  const date = new Date().toLocaleDateString();
+  const div = document.createElement('div');
+  div.className = 'message';
+  div.innerHTML = `<strong>${name}</strong> <em>${time} ${date}</em><br>${text}`;
+  forumMessages.appendChild(div);
+  e.target.reset();
+});
+
+// Завдання 2
+const questions = [
+  {q: 'How many letters are there in the word "Hello"?', correct: '5', wrong: '2'},
+  {q: 'How many letters are there in the word "World"?', correct: '5', wrong: '4'}
+];
+const testContainer = document.getElementById('testContainer');
+questions.forEach((item, idx) => {
+  const div = document.createElement('div');
+  div.innerHTML = `<p>${idx+1}) ${item.q}</p>
+    <label><input type="radio" name="q${idx}" value="${item.correct}">${item.correct}</label>
+    <label><input type="radio" name="q${idx}" value="${item.wrong}">${item.wrong}</label>`;
+  testContainer.appendChild(div);
+});
+document.getElementById('finishTest').addEventListener('click', () => {
+  let score = 0;
+  questions.forEach((item, idx) => {
+    const ans = document.querySelector(`input[name="q${idx}"]:checked`);
+    if (ans && ans.value === item.correct) score++;
+  });
+  testResult.textContent = `Результат: ${score} правильних з ${questions.length}`;
+});
+
+// Завдання 3
+document.getElementById('styleForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const data = new FormData(e.target);
+  let style = '';
+  if (data.get('bold')) style += 'font-weight:bold;';
+  if (data.get('underline')) style += 'text-decoration:underline;';
+  if (data.get('italic')) style += 'font-style:italic;';
+  style += `text-align:${data.get('align')};`;
+  styledOutput.innerHTML = `<p style="${style}">${data.get('text')}</p>`;
+});
+
+// Завдання 4
+document.getElementById('bookForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const title = bookTitle.value;
+  const qty = bookQty.value;
+  const name = custName.value;
+  const date = deliveryDate.value;
+  const addr = deliveryAddr.value;
+  bookResult.textContent = `${name}, дякуємо за замовлення! Книга "${title}" (${qty} шт.) буде доставлена ${date} за адресою ${addr}.`;
+});
+
+// Завдання 5
+const students = ['Student 1','Student 2','Student 3'];
+const studentsList = document.getElementById('studentsList');
+students.forEach(s => {
+  const lbl = document.createElement('label');
+  lbl.innerHTML = `<input type="checkbox" value="${s}"> ${s}`;
+  <!-- Продовження JS -->
+  studentsList.appendChild(lbl);
+});
+
+document.getElementById('attendanceForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const group = groupSelect.value;
+  const lesson = lessonNum.value;
+  const topic = lessonTopic.value;
+  const present = Array.from(studentsList.querySelectorAll('input:checked'))
+                       .map(ch => ch.value);
+  attendanceResult.textContent =
+    `Група: ${group}\nПара: ${lesson}\nТема: ${topic}\nПрисутні: ${present.join(', ')}`;
+});
+
+// Завдання 6
+document.getElementById('searchSeats').addEventListener('click', () => {
+  seatsContainer.innerHTML = '';
+  // 5 рядів по 6 місць
+  for (let row = 1; row <= 5; row++) {
+    const rowDiv = document.createElement('div');
+    for (let seat = 1; seat <= 6; seat++) {
+      const div = document.createElement('div');
+      div.className = 'seat';
+      div.textContent = seat;
+      div.dataset.seat = `Ряд ${row}, Місце ${seat}`;
+      div.addEventListener('click', () => {
+        div.classList.toggle('selected');
+      });
+      rowDiv.appendChild(div);
+    }
+    seatsContainer.appendChild(rowDiv);
+  }
+});
+
+document.getElementById('bookSeats').addEventListener('click', () => {
+  const selected = Array.from(document.querySelectorAll('.seat.selected'))
+                         .map(s => s.dataset.seat);
+  if (!selected.length) {
+    alert('Оберіть хоча б одне місце!');
+    return;
+  }
+  const dir = direction.value;
+  const date = tripDate.value;
+  ticketsList.textContent =
+    `Бронювання на ${date}, напрямок "${dir}":\n${selected.join('\n')}`;
+});
+</script>
+
+</body>
+</html>

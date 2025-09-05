@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>Lab13</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; }
+  section { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; border-radius: 8px; }
+  h2 { margin-top: 0; }
+  label { display: block; margin-top: 8px; }
+  input, select, textarea, button { margin-top: 4px; padding: 6px; }
+  .palette { display: flex; gap: 5px; margin-top: 10px; }
+  .color-box { width: 40px; height: 40px; cursor: pointer; border: 1px solid #ccc; }
+  .question { border: 1px solid #ccc; padding: 5px; margin-top: 5px; border-radius: 5px; }
+</style>
+</head>
+<body>
+
+<h1>JS Lab13 — Завдання 1–5</h1>
+
+<!-- Завдання 1 -->
+<section>
+  <h2>1. Логін з "Запам'ятати мене"</h2>
+  <form id="loginForm">
+    <label>Ваш логін: <input type="text" id="loginName" required></label>
+    <label>Ваш пароль: <input type="password" required></label>
+    <label><input type="checkbox" id="rememberMe"> Запам'ятати мене</label>
+    <button type="submit">Sign In</button>
+  </form>
+  <p id="loginResult"></p>
+</section>
+
+<!-- Завдання 2 -->
+<section>
+  <h2>2. Реєстрація</h2>
+  <form id="regForm">
+    <label>Email: <input type="email" id="regEmail" required></label>
+    <label>Логін: <input type="text" required></label>
+    <label>Пароль: <input type="password" id="pass1" required></label>
+    <label>Повторіть пароль: <input type="password" id="pass2" required></label>
+    <button type="submit">Sign Up</button>
+  </form>
+  <p id="regResult"></p>
+</section>
+
+<!-- Завдання 3 -->
+<section>
+  <h2>3. Інформація про користувача</h2>
+  <form id="infoForm">
+    <label>Ім'я: <input type="text" name="firstname" required></label>
+    <label>Прізвище: <input type="text" name="lastname" required></label>
+    <label>Дата народження: <input type="date" name="birthday" required></label>
+    <label>Стать:
+      <input type="radio" name="gender" value="Male" required> Чоловіча
+      <input type="radio" name="gender" value="Female"> Жіноча
+    </label>
+    <label>Країна: <input type="text" name="country" required></label>
+    <label>Місто: <input type="text" name="city" required></label>
+    <label>Навички:
+      <input type="checkbox" name="skills" value="HTML"> HTML
+      <input type="checkbox" name="skills" value="CSS"> CSS
+      <input type="checkbox" name="skills" value="JS"> JS
+      <input type="checkbox" name="skills" value="PHP"> PHP
+    </label>
+    <button type="submit">Save</button>
+  </form>
+  <pre id="infoResult"></pre>
+</section>
+
+<!-- Завдання 4 -->
+<section>
+  <h2>4. Палітра кольорів + додавання нового</h2>
+  <div id="palette" class="palette"></div>
+  <form id="colorForm">
+    <label>R: <input type="number" id="r" min="0" max="255" required></label>
+    <label>G: <input type="number" id="g" min="0" max="255" required></label>
+    <label>B: <input type="number" id="b" min="0" max="255" required></label>
+    <button type="submit">Add color</button>
+  </form>
+</section>
+
+<!-- Завдання 5 -->
+<section>
+  <h2>5. Створення тесту</h2>
+  <div id="questionsList"></div>
+  <form id="testForm">
+    <label>Питання: <input type="text" id="qText" required></label>
+    <label>Правильна відповідь: <input type="text" id="qCorrect" required></label>
+    <label>Неправильна відповідь: <input type="text" id="qWrong" required></label>
+    <button type="submit">Add</button>
+  </form>
+</section>
+
+<script>
+// Завдання 1
+document.getElementById('loginForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const name = document.getElementById('loginName').value.trim();
+  const remember = document.getElementById('rememberMe').checked;
+  document.getElementById('loginResult').textContent =
+    `Привіт, ${name}! Я тебе ${remember ? 'запам\'ятав' : 'не запам\'ятав'}.`;
+});
+
+// Завдання 2
+document.getElementById('regForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const email = document.getElementById('regEmail').value.trim();
+  const p1 = document.getElementById('pass1').value;
+  const p2 = document.getElementById('pass2').value;
+  if (p1 !== p2) {
+    alert('Паролі не співпадають!');
+    return;
+  }
+  document.getElementById('regResult').textContent =
+    `На ${email} надіслано лист із підтвердженням.`;
+});
+
+// Завдання 3
+document.getElementById('infoForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  const skills = formData.getAll('skills').join(', ');
+  const result = `
+Firstname: ${formData.get('firstname')}
+Lastname: ${formData.get('lastname')}
+Birthday: ${formData.get('birthday')}
+Gender: ${formData.get('gender')}
+Country: ${formData.get('country')}
+City: ${formData.get('city')}
+Skills: ${skills}
+  `;
+  document.getElementById('infoResult').textContent = result.trim();
+});
+
+// Завдання 4
+const paletteEl = document.getElementById('palette');
+const colors = [
+  [165,42,42],[138,43,226],[0,139,139],[100,149,237],
+  [210,105,30],[0,206,209],[189,183,107],[255,105,180]
+];
+function renderPalette() {
+  paletteEl.innerHTML = '';
+  colors.forEach(c => {
+    const div = document.createElement('div');
+    div.className = 'color-box';
+    div.style.background = `rgb(${c.join(',')})`;
+    paletteEl.appendChild(div);
+  });
+}
+renderPalette();
+document.getElementById('colorForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const r = +document.getElementById('r').value;
+  const g = +document.getElementById('g').value;
+  const b = +document.getElementById('b').value;
+  colors.push([r,g,b]);
+  renderPalette();
+  e.target.reset();
+});
+
+// Завдання 5
+document.getElementById('testForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const q = document.getElementById('qText').value.trim();
+  const c = document.getElementById('qCorrect').value.trim();
+  const w = document.getElementById('qWrong').value.trim();
+  const div = document.createElement('div');
+  div.className = 'question';
+  div.innerHTML = `<strong>${q}</strong><br>Правильна: ${c}<br>Неправильна: ${w}`;
+  document.getElementById('questionsList').appendChild(div);
+  e.target.reset();
+});
+</script>
+
+</body>
+</html>
