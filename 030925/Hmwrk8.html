@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hmwrk8</title>
+<style>
+  :root { --gap: 14px; --radius: 10px; --muted:#666; --primary:#0a66ff; }
+  body { font-family: system-ui, Arial, sans-serif; margin: 24px; line-height: 1.45; }
+  h2 { margin: 0 0 8px; }
+  section { border: 1px solid #e5e7eb; padding: 16px; border-radius: var(--radius); margin-bottom: 20px; }
+  .row { display: flex; align-items: center; gap: var(--gap); flex-wrap: wrap; }
+  button { padding: 8px 12px; border-radius: 8px; border: 1px solid #d1d5db; background: #f8fafc; cursor: pointer; }
+  button:disabled { opacity: .5; cursor: not-allowed; }
+  .muted { color: var(--muted); }
+  hr { border: none; border-top: 1px dashed #e5e7eb; margin: 16px 0; }
+
+  /* Task 1 */
+  input[type="range"] { width: 320px; accent-color: var(--primary); }
+  input[type="range"]::-webkit-slider-thumb { background: #1e3a8a; }
+  .value { font-weight: 600; color: #1e3a8a; }
+
+  /* Task 2 */
+  .gallery { display: grid; grid-template-columns: auto 320px auto; gap: 10px; align-items: center; }
+  .gallery img { width: 320px; height: 200px; object-fit: cover; border-radius: 8px; border: 1px solid #e5e7eb; }
+  .gallery .idx { text-align: center; margin-top: 6px; font-size: 14px; color: var(--muted); }
+
+  /* Task 3 */
+  .accordion { border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; }
+  .acc-item + .acc-item { border-top: 1px solid #e5e7eb; }
+  .acc-header { padding: 12px; background: #f8fafc; cursor: pointer; font-weight: 600; }
+  .acc-content { padding: 12px; display: none; }
+  .acc-item.active .acc-content { display: block; }
+
+  /* Task 4*/
+  .news { display: grid; gap: 10px; }
+  .news .card { border: 1px solid #e5e7eb; border-radius: 8px; padding: 10px; background: #fff; }
+  .center { text-align: center; }
+
+  /* Task 5 */
+  .calendar-controls { display: flex; gap: 10px; align-items: center; }
+  .calendar { border-collapse: collapse; margin-top: 10px; }
+  .calendar th, .calendar td { border: 1px solid #e5e7eb; padding: 6px 8px; width: 40px; height: 34px; text-align: right; }
+  .calendar th { background: #f1f5f9; text-align: center; }
+  .calendar .today { background: #fff7ed; border-color: #fdba74; }
+
+  /* Task 6 */
+  .links a { display: inline-block; margin: 4px 0; }
+  .external { text-decoration: underline dotted; }
+
+  /* Task 7 */
+  .books { list-style: none; padding: 0; margin: 0; }
+  .books li { padding: 6px 8px; border-radius: 6px; cursor: pointer; }
+  .books li:hover { background: #f8fafc; }
+  .books li.selected { color: #f97316; font-weight: 600; }
+
+  /* Task 8 */
+  .editable { border: 1px solid #e5e7eb; border-radius: 8px; padding: 10px; min-height: 80px; background: #fff; }
+  .hint { font-size: 13px; color: var(--muted); }
+
+  /* Task 9 */
+  table.sortable { border-collapse: collapse; width: 100%; }
+  table.sortable th, table.sortable td { border: 1px solid #e5e7eb; padding: 8px; }
+  table.sortable th { background: #f8fafc; cursor: pointer; user-select: none; }
+  .sort-ind { font-size: 12px; color: var(--muted); margin-left: 6px; }
+</style>
+</head>
+<body>
+
+<section id="task1">
+  <h2>Завдання 1 — Трекбар</h2>
+  <div class="row">
+    <label for="range1" class="muted">Виберіть значення:</label>
+    <input id="range1" type="range" min="0" max="100" value="50" />
+    <span>Поточне значення: <span id="range1Val" class="value">50</span></span>
+  </div>
+</section>
+
+<section id="task2">
+  <h2>Завдання 2 — Галерея з кнопками</h2>
+  <div class="gallery">
+    <button id="prev2">Назад</button>
+    <div>
+      <img id="img2" alt="Зображення галереї" />
+      <div class="idx"><span id="idx2">1</span> / <span id="total2">1</span></div>
+    </div>
+    <button id="next2">Вперед</button>
+  </div>
+</section>
+
+<section id="task3">
+  <h2>Завдання 3 — Аккордеон </h2>
+  <div class="accordion" id="accordion3">
+    <div class="acc-item">
+      <div class="acc-header">Розділ 1</div>
+      <div class="acc-content">Контент першого розділу. </div>
+    </div>
+    <div class="acc-item">
+      <div class="acc-header">Розділ 2</div>
+      <div class="acc-content">Контент другого розділу. </div>
+    </div>
+    <div class="acc-item">
+      <div class="acc-header">Розділ 3</div>
+      <div class="acc-content">Контент третього розділу. </div>
+    </div>
+  </div>
+</section>
+
+<section id="task4">
+  <h2>Завдання 4 — Новини з дозавантаженням</h2>
+  <p class="muted">Полегшений варіант: кнопка “Завантажити ще”.</p>
+  <div class="news" id="news4"></div>
+  <div class="center" style="margin-top:10px;">
+    <button id="loadMore4">Завантажити ще</button>
+  </div>
+</section>
+
+<section id="task5">
+  <h2>Завдання 5 — Календар (понеділок — перший день)</h2>
+  <div class="calendar-controls">
+    <label>Місяць:
+      <input id="month5" type="number" min="1" max="12" value="9" />
+    </label>
+    <label>Рік:
+      <input id="year5" type="number" min="1900" max="2100" value="2025" />
+    </label>
+    <button id="gen5">Згенерувати</button>
+  </div>
+  <div id="calendar5"></div>
+</section>
+
+<section id="task6">
+  <h2>Завдання 6 — Підкреслення зовнішніх посилань</h2>
+  <p class="muted">JS знаходить у списку посилання, що починаються з http://, і додає пунктирне підкреслення.</p>
+  <div class="links" id="links6">
+    <a href="http://google.com">http://google.com</a><br/>
+    <a href="https://itstep.org">https://itstep.org</a><br/>
+    <a href="/local/path">/local/path</a><br/>
+    <a href="http://kr.gov.ua">http://kr.gov.ua</a>
+  </div>
+</section>
+
+<section id="task7">
+  <h2>Завдання 7 — Вибір книг з Ctrl / Shift</h2>
+  <ul class="books" id="books7">
+    <li>Clean Code — Robert C. Martin</li>
+    <li>You Don't Know JS — Kyle Simpson</li>
+    <li>The Pragmatic Programmer — Andrew Hunt, David Thomas</li>
+    <li>Designing Data-Intensive Applications — Martin Kleppmann</li>
+    <li>Refactoring — Martin Fowler</li>
+    <li>Patterns of Enterprise Application Architecture — Martin Fowler</li>
+  </ul>
+  <p class="hint">Клік — одиночний вибір; Ctrl — додає/прибирає з виділення; Shift — вибір діапазону.</p>
+</section>
+
+<section id="task8">
+  <h2>Завдання 8 — Відображення / редагування тексту (Ctrl+E, Ctrl+S)</h2>
+  <div id="wrap8">
+    <div id="view8" class="editable" contenteditable="false">
+      Це початковий текст. Натисни Ctrl+E — з'явиться textarea для редагування. Потім Ctrl+S — збереження назад у div.
+    </div>
+  </div>
+  <p class="hint">Поведінка браузера для Ctrl+E / Ctrl+S відключена.</p>
+</section>
+
+<section id="task9">
+  <h2>Завдання 9 — Сортування таблиці по заголовку</h2>
+  <table class="sortable" id="table9">
+    <thead>
+      <tr>
+        <th data-key="name">Ім'я <span class="sort-ind"></span></th>
+        <th data-key="age">Вік <span class="sort-ind"></span></th>
+        <th data-key="city">Місто <span class="sort-ind"></span></th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</section>
+
+<script>
+/* ===== Task 1 ===== */
+(() => {
+  const range = document.getElementById('range1');
+  const out = document.getElementById('range1Val');
+  const update = () => { out.textContent = range.value; };
+  range.addEventListener('input', update);
+  update();
+})();
+
+/* ===== Task 2 ===== */
+(() => {
+  const prev = document.getElementById('prev2');
+  const next = document.getElementById('next2');
+  const img = document.getElementById('img2');
+  const idxEl = document.getElementById('idx2');
+  const totalEl = document.getElementById('total2');
+
+  const mk = (bg, text) => 
+    'data:image/svg+xml;utf8,' + encodeURIComponent(
+      `<svg xmlns="http://www.w3.org/2000/svg" width="640" height="400">
+        <rect width="100%" height="100%" fill="${bg}"/>
+        <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+              font-size="48" font-family="Arial" fill="white">${text}</text>
+      </svg>`
+    );
+  const images = [
+    mk('#334155','Слайд 1'),
+    mk('#0ea5e9','Слайд 2'),
+    mk('#22c55e','Слайд 3'),
+    mk('#f97316','Слайд 4'),
+    mk('#dc2626','Слайд 5'),
+  ];
+  let i = 0;
+
+  const render = () => {
+    img.src = images[i];
+    idxEl.textContent = String(i + 1);
+    totalEl.textContent = String(images.length);
+    prev.disabled = i === 0;
+    next.disabled = i === images.length - 1;
+  };
+  prev.addEventListener('click', () => { if (i > 0) { i--; render(); } });
+  next.addEventListener('click', () => { if (i < images.length - 1) { i++; render(); } });
+  render();
+})();
+
+/* ===== Task 3 ===== */
+(() => {
+  const root = document.getElementById('accordion3');
+  let active = null;
+  root.querySelectorAll('.acc-header').forEach((hdr, index) => {
+    hdr.addEventListener('click', () => {
+      const item = hdr.parentElement;
+      if (active === item) {
+        item.classList.remove('active');
+        active = null;
+        return;
+        }
+      if (active) active.classList.remove('active');
+      item.classList.add('active');
+      active = item;
+    });
+  });
+})();
+
+/* ===== Task 4 ===== */
+(() => {
+  const list = document.getElementById('news4');
+  const btn = document.getElementById('loadMore4');
+  const chunk = 4;
+  const news = Array.from({length: 18}, (_, n) => ({
+    title: `Новина #${n+1}`,
+    text: `Це текст новини №${n+1}.`
+  }));
+  let offset = 0;
+
+  const append = () => {
+    const slice = news.slice(offset, offset + chunk);
+    slice.forEach(n => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `<strong>${n.title}</strong><hr/><div>${n.text}</div>`;
+      list.appendChild(card);
+    });
+    offset += slice.length;
+    if (offset >= news.length) {
+      btn.disabled = true;
+      btn.textContent = 'Більше новин немає';
+    }
+  };
+  btn.addEventListener('click', append);
+  append();
+})();
+
+/* ===== Task 5 ===== */
+(() => {
+  const monthEl = document.getElementById('month5');
+  const yearEl = document.getElementById('year5');
+  const genBtn = document.getElementById('gen5');
+  const host = document.getElementById('calendar5');
+
+  const weekdayNames = ['Пн','Вт','Ср','Чт','Пт','Сб','Нд'];
+
+  function buildCalendar(year, month1) {
+    const m0 = month1 - 1;
+    const first = new Date(year, m0, 1);
+    const last = new Date(year, m0 + 1, 0);
+    const daysInMonth = last.getDate();
+    const firstDowMon0 = (first.getDay() + 6) % 7;
+
+    const table = document.createElement('table');
+    table.className = 'calendar';
+    const thead = document.createElement('thead');
+    const thr = document.createElement('tr');
+    weekdayNames.forEach(w => {
+      const th = document.createElement('th'); th.textContent = w; thr.appendChild(th);
+    });
+    thead.appendChild(thr);
+    table.appendChild(thead);
+
+    const tbody = document.createElement('tbody');
+    let day = 1;
+    for (let r = 0; r < 6 && day <= daysInMonth; r++) {
+      const tr = document.createElement('tr');
+      for (let c = 0; c < 7; c++) {
+        const td = document.createElement('td');
+        if (r === 0 && c < firstDowMon0 || day > daysInMonth) {
+          td.textContent = '';
+        } else {
+          td.textContent = String(day);
+          const now = new Date();
+          if (day === now.getDate() && m0 === now.getMonth() && year === now.getFullYear()) {
+            td.classList.add('today');
+          }
+          day++;
+        }
+        tr.appendChild(td);
+      }
+      tbody.appendChild(tr);
+    }
+    table.appendChild(tbody);
+    return table;
+  }
+
+  function render() {
+    const y = parseInt(yearEl.value, 10);
+    const m = parseInt(monthEl.value, 10);
+    host.innerHTML = '';
+    host.appendChild(buildCalendar(y, m));
+  }
+
+  genBtn.addEventListener('click', render);
+  render();
+})();
+
+/* ===== Task 6 ===== */
+(() => {
+  const root = document.getElementById('links6');
+  const links = root.querySelectorAll('a[href]');
+  links.forEach(a => {
+    const href = a.getAttribute('href') || '';
+    if (href.startsWith('http://')) a.classList.add('external');
+  });
+})();
+
+/* ===== Task 7 ===== */
+(() => {
+  const list = document.getElementById('books7');
+  const items = Array.from(list.querySelectorAll('li'));
+  let lastIndex = null;
+
+  function setSelected(indices) {
+    items.forEach((li, i) => li.classList.toggle('selected', indices.has(i)));
+  }
+
+  let selected = new Set();
+
+  items.forEach((li, i) => {
+    li.addEventListener('click', (e) => {
+      const ctrl = e.ctrlKey || e.metaKey; // підтримка Cmd на macOS
+      const shift = e.shiftKey;
+
+      if (shift && lastIndex !== null) {
+        const [a, b] = i > lastIndex ? [lastIndex, i] : [i, lastIndex];
+        for (let k = a; k <= b; k++) selected.add(k);
+      } else if (ctrl) {
+        if (selected.has(i)) selected.delete(i); else selected.add(i);
+        lastIndex = i;
+      } else {
+        selected = new Set([i]);
+        lastIndex = i;
+      }
+      setSelected(selected);
+    });
+  });
+})();
+
+/* ===== Task 8 ===== */
+(() => {
+  const wrap = document.getElementById('wrap8');
+  const view = document.getElementById('view8');
+  let editing = false;
+  let ta = null;
+
+  function toEdit() {
+    if (editing) return;
+    ta = document.createElement('textarea');
+    ta.style.width = '100%';
+    ta.style.minHeight = '120px';
+    ta.value = view.textContent;
+    wrap.replaceChild(ta, view);
+    ta.focus();
+    editing = true;
+  }
+  function toView() {
+    if (!editing) return;
+    const newDiv = document.createElement('div');
+    newDiv.id = 'view8';
+    newDiv.className = 'editable';
+    newDiv.textContent = ta.value;
+    wrap.replaceChild(newDiv, ta);
+    editing = false;
+  }
+
+  document.addEventListener('keydown', (e) => {
+    const k = e.key.toLowerCase();
+    if (e.ctrlKey && (k === 'e' || k === 's')) {
+      e.preventDefault();
+      if (k === 'e') toEdit();
+      else if (k === 's') toView();
+    }
+  });
+})();
+
+/* ===== Task 9 ===== */
+(() => {
+  const table = document.getElementById('table9');
+  const tbody = table.querySelector('tbody');
+  const ths = table.querySelectorAll('th');
+
+  const data = [
+    { name: 'Олена', age: 29, city: 'Київ' },
+    { name: 'Ігор', age: 34, city: 'Львів' },
+    { name: 'Марія', age: 22, city: 'Одеса' },
+    { name: 'Петро', age: 41, city: 'Дніпро' },
+    { name: 'Сергій', age: 34, city: 'Харків' },
+    { name: 'Анна', age: 29, city: 'Кривий Ріг' },
+    { name: 'Юрій', age: 19, city: 'Полтава' },
+    { name: 'Віра', age: 50, city: 'Чернігів' },
+  ];
+
+  let sortState = { key: null, dir: 1 };
+
+  function render(rows) {
+    tbody.innerHTML = '';
+    rows.forEach(r => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${r.name}</td><td>${r.age}</td><td>${r.city}</td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function isNumericColumn(key) {
+    return typeof data[0]?.[key] === 'number';
+  }
+
+  function sortBy(key) {
+    if (sortState.key === key) sortState.dir *= -1;
+    else { sortState.key = key; sortState.dir = 1; }
+
+    const dir = sortState.dir;
+    const rows = [...data].sort((a, b) => {
+      const va = a[key], vb = b[key];
+      if (isNumericColumn(key)) return (va - vb) * dir;
+      return String(va).localeCompare(String(vb), 'uk') * dir;
+    });
+    updateIndicators();
+    render(rows);
+  }
+
+  function updateIndicators() {
+    ths.forEach(th => {
+      const ind = th.querySelector('.sort-ind');
+      if (th.dataset.key === sortState.key) ind.textContent = sortState.dir === 1 ? '▲' : '▼';
+      else ind.textContent = '';
+    });
+  }
+
+  ths.forEach(th => th.addEventListener('click', () => sortBy(th.dataset.key)));
+  updateIndicators();
+  render(data);
+})();
+</script>
+</body>
+</html>
