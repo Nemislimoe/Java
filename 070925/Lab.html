@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Lab</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    section { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; border-radius: 8px; }
+    h2 { margin-top: 0; }
+    .traffic-light { display: flex; gap: 10px; margin-top: 10px; }
+    .light { width: 60px; height: 60px; border-radius: 50%; background: #ccc; opacity: 0.3; }
+    .light.active { opacity: 1; }
+    .result { margin-top: 10px; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+<!-- Завдання 1 -->
+<section>
+  <h2>1. Вгадай число</h2>
+  <form id="guessForm">
+    <label>Введіть число (1–20): <input type="number" id="guessInput" min="1" max="20" required></label>
+    <button type="submit">Спробувати</button>
+  </form>
+  <div id="guessResult" class="result"></div>
+</section>
+
+<!-- Завдання 2 -->
+<section>
+  <h2>2. Світлофор</h2>
+  <div class="traffic-light">
+    <div id="red" class="light" style="background:red;"></div>
+    <div id="yellow" class="light" style="background:yellow;"></div>
+    <div id="green" class="light" style="background:green;"></div>
+  </div>
+</section>
+
+<!-- Завдання 3 -->
+<section>
+  <h2>3. Опитування: Улюблений фрукт</h2>
+  <form id="pollForm">
+    <label><input type="radio" name="fruit" value="Яблуко" required> Яблуко</label><br>
+    <label><input type="radio" name="fruit" value="Банан"> Банан</label><br>
+    <label><input type="radio" name="fruit" value="Апельсин"> Апельсин</label><br>
+    <button type="submit">Проголосувати</button>
+  </form>
+  <div id="pollResults" class="result"></div>
+</section>
+
+<script>
+// Завдання 1
+(() => {
+  const secret = Math.floor(Math.random() * 20) + 1;
+  const form = document.getElementById('guessForm');
+  const input = document.getElementById('guessInput');
+  const result = document.getElementById('guessResult');
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const guess = parseInt(input.value, 10);
+    if (guess < secret) result.textContent = 'Загадане більше';
+    else if (guess > secret) result.textContent = 'Загадане менше';
+    else result.textContent = 'Вітаю! Ви вгадали!';
+  });
+})();
+
+// Завдання 2
+(() => {
+  const lights = ['red', 'yellow', 'green'];
+  let index = 0;
+  const update = () => {
+    lights.forEach((id, i) => {
+      document.getElementById(id).classList.toggle('active', i === index);
+    });
+    index = (index + 1) % lights.length;
+  };
+  update();
+  setInterval(update, 3000);
+})();
+
+// Завдання 3
+(() => {
+  const form = document.getElementById('pollForm');
+  const results = document.getElementById('pollResults');
+  const votes = { 'Яблуко': 0, 'Банан': 0, 'Апельсин': 0 };
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const fruit = form.fruit.value;
+    votes[fruit]++;
+    const total = Object.values(votes).reduce((a, b) => a + b, 0);
+    const output = Object.entries(votes)
+      .map(([k, v]) => `${k} – ${Math.round((v / total) * 100)}%`)
+      .join(', ');
+    results.textContent = output;
+  });
+})();
+</script>
+
+</body>
+</html>
