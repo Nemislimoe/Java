@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <title>Інформація користувача</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; line-height: 1.45; }
+    h1 { margin: 0 0 12px; }
+    .top { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    button { padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 8px; background: #f8fafc; cursor: pointer; }
+    form { max-width: 420px; }
+    label { display: block; margin-top: 12px; }
+    input, select { width: 100%; padding: 8px; margin-top: 6px; border: 1px solid #d1d5db; border-radius: 6px; }
+    .error { color: #dc2626; font-size: 13px; min-height: 16px; margin-top: 4px; }
+    .muted { color: #6b7280; font-size: 14px; }
+  </style>
+</head>
+<body>
+
+  <div class="top">
+    <h1 id="welcome">Hello!</h1>
+    <button id="exitBtn" title="Вийти з облікового запису">Exit</button>
+  </div>
+  <p class="muted">Заповніть форму. Необов’язкові поля: телефон, Skype.</p>
+
+  <h2>Дані користувача</h2>
+  <form id="userForm" novalidate>
+    <label>Ім'я:
+      <input type="text" id="fname" autocomplete="given-name" />
+    </label>
+    <div id="fnameErr" class="error"></div>
+
+    <label>Прізвище:
+      <input type="text" id="lname" autocomplete="family-name" />
+    </label>
+    <div id="lnameErr" class="error"></div>
+
+    <label>Рік народження:
+      <input type="number" id="year" min="1900" max="2100" inputmode="numeric" />
+    </label>
+    <div id="yearErr" class="error"></div>
+
+    <label>Стать:
+      <select id="gender">
+        <option value="">— Оберіть —</option>
+        <option value="male">Чоловіча</option>
+        <option value="female">Жіноча</option>
+      </select>
+    </label>
+    <div id="genderErr" class="error"></div>
+
+    <label>Телефон (необов’язково):
+      <input type="text" id="phone" placeholder="+38 (0XX) XXX-XX-XX" />
+    </label>
+    <div id="phoneErr" class="error"></div>
+
+    <label>Skype (необов’язково):
+      <input type="text" id="skype" placeholder="letters.digits-dash.dot" />
+    </label>
+    <div id="skypeErr" class="error"></div>
+
+    <button type="submit">Save</button>
+  </form>
+
+  <script>
+    // Збереження у cookie (1 година)
+    function setCookie(name, value, hours) {
+      const d = new Date();
+      d.setTime(d.getTime() + hours * 60 * 60 * 1000);
+      document.cookie = `${name}=${encodeURIComponent(value)};expires=${d.toUTCString()};path=/`;
+    }
+    function getCookie(name) {
+      const match = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()[\]\\/+^])/g, '\\$1') + '=([^;]*)'));
+      return match ? decodeURIComponent(match[1]) : null;
+    }
+    function deleteCookie(name) {
+      document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+    }
+
+    // Перевірка авторизації
+    const email = getCookie('email');
+    if (!email) {
+      location.href = 'registration.html';
+    } else {
+      document.getElementById('welcome').textContent = `Hello, ${email}!`;
+    }
+
+    // Заповнення форми з cookie
+    const fields = ['fname','lname','year','gender','phone','skype'];
+    fields.forEach(id => {
+      const val = getCookie(id);
+      if (val !== null) document.getElementById(id).value = val;
+    });
+
+    // Вихід
+    document.getElementById('exitBtn').addEventListener('click', () => {
+      ['email','password','fname','lname','year','gender','phone','skype'].forEach(deleteCookie);
+      location.href = 'registration.html';
+    });
+
+    // Валідація форми 
+    const nameRe = /^[A-Za-zА-Яа-яЇїІіЄєҐґ]{1,20}$/; // тільки літери, макс 20
+    const phoneAllowedRe = /^[\d\s()\-\+]*$/; // дозволені символи
+    const skypeRe = /^[A-Za-z0-9.\-]+$/; // літери, цифри, дефіс, крапка
+
+    document.getElementById('userForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      // Очистка помилок
+      ['fnameErr','lnameErr','yearErr','genderErr','phoneErr','skypeErr'].forEach(id => {
+        document.getElementById(id).textContent = '';
+      });
+
+      const fname = document.getElementById('fname').value.trim();
+      const lname = document.getElementById('lname').value.trim();
+      const year = document.getElementById('year').value.trim();
+      const gender = document.getElementById('gender').value;
+      const phone = document.getElementById('phone').value.trim();
+      const skype = document.getElementById('skype').value.trim();
+
+      let valid = true;
+
+      // First name
+      if (!fname) { document.getElementById('fnameErr').textContent = 'Ім\'я обов\'язкове'; valid = false; }
+      else if (!nameRe.test(fname)) { document.getElementById('fnameErr').textContent = 'Тільки літери, до 20 символів'; valid = false; }
+
+      // Last name
+      if (!lname) { document.getElementById('lnameErr').textContent = 'Прізвище обов\'язкове'; valid = false; }
+      else if (!nameRe.test(lname)) { document.getElementById('lnameErr').textContent = 'Тільки літери, до 20 символів'; valid = false; }
+
+      // Year
+      const currentYear = new Date().getFullYear();
+      const yNum = parseInt(year, 10);
+      if (!year) { document.getElementById('yearErr').textContent = 'Рік обов\'язковий'; valid = false; }
+      else if (Number.isNaN(yNum) || yNum < 1900 || yNum > currentYear) {
+        document.getElementById('yearErr').textContent = `Рік у діапазоні 1900–${currentYear}`;
+        valid = false;
+      }
+
+      // Gender
+      if (!gender) { document.getElementById('genderErr').textContent = 'Оберіть стать'; valid = false; }
+
+      // Phone (optional)
+      if (phone) {
+        if (!phoneAllowedRe.test(phone)) {
+          document.getElementById('phoneErr').textContent = 'Дозволені цифри, пробіли, (), - і +';
+          valid = false;
+        } else {
+          const digits = phone.replace(/\D/g, '');
+          if (digits.length < 10 || digits.length > 12) {
+            document.getElementById('phoneErr').textContent = 'У номері має бути 10–12 цифр';
+            valid = false;
+          }
+        }
+      }
+
+      // Skype (optional)
+      if (skype && !skypeRe.test(skype)) {
+        document.getElementById('skypeErr').textContent = 'Дозволені літери, цифри, дефіс, крапка';
+        valid = false;
+      }
+
+      if (!valid) return;
+
+      // Збереження у cookie (1 година)
+      setCookie('fname', fname, 1);
+      setCookie('lname', lname, 1);
+      setCookie('year', yNum, 1);
+      setCookie('gender', gender, 1);
+      setCookie('phone', phone, 1);
+      setCookie('skype', skype, 1);
+
+      alert('Дані збережено!');
+    });
+  </script>
+</body>
+</html>

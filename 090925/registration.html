@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>Реєстрація</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; }
+  label { display: block; margin-top: 10px; }
+  input { padding: 6px; width: 250px; }
+  .error { color: red; font-size: 0.9em; }
+</style>
+</head>
+<body>
+
+<h1>Реєстрація</h1>
+<form id="regForm" novalidate>
+  <label>Email: <input type="text" id="email"></label>
+  <div id="emailErr" class="error"></div>
+
+  <label>Пароль: <input type="password" id="pass"></label>
+  <div id="passErr" class="error"></div>
+
+  <label>Повторіть пароль: <input type="password" id="pass2"></label>
+  <div id="pass2Err" class="error"></div>
+
+  <button type="submit">Sign Up</button>
+</form>
+
+<script>
+// Кукіси
+function setCookie(name, value, hours) {
+  const d = new Date();
+  d.setTime(d.getTime() + (hours*60*60*1000));
+  document.cookie = `${name}=${encodeURIComponent(value)};expires=${d.toUTCString()};path=/`;
+}
+function getCookie(name) {
+  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  return match ? decodeURIComponent(match[2]) : null;
+}
+
+// Якщо вже є email у cookie — переходимо на user.html
+if (getCookie('email')) {
+  location.href = 'user.html';
+}
+
+document.getElementById('regForm').addEventListener('submit', e => {
+  e.preventDefault();
+  let valid = true;
+
+  const emailVal = document.getElementById('email').value.trim();
+  const passVal = document.getElementById('pass').value;
+  const pass2Val = document.getElementById('pass2').value;
+
+  // Очищення помилок
+  document.getElementById('emailErr').textContent = '';
+  document.getElementById('passErr').textContent = '';
+  document.getElementById('pass2Err').textContent = '';
+
+  const emailPattern = /^[A-Za-z0-9._%+-]{3,}@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+  if (!emailVal) { 
+    document.getElementById('emailErr').textContent = 'Email обов\'язковий'; 
+    valid = false; 
+  }
+  else if (!emailPattern.test(emailVal)) { 
+    document.getElementById('emailErr').textContent = 'Невірний формат email'; 
+    valid = false; 
+  }
+
+  // Перевірка пароля
+  const passPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/;
+  if (!passVal) { 
+    document.getElementById('passErr').textContent = 'Пароль обов\'язковий'; 
+    valid = false; 
+  }
+  else if (!passPattern.test(passVal)) { 
+    document.getElementById('passErr').textContent = 'Мін. 6 символів, 1 велика, 1 мала літера, 1 цифра'; 
+    valid = false; 
+  }
+
+  // Підтвердження пароля
+  if (!pass2Val) { 
+    document.getElementById('pass2Err').textContent = 'Повторіть пароль'; 
+    valid = false; 
+  }
+  else if (passVal !== pass2Val) { 
+    document.getElementById('pass2Err').textContent = 'Паролі не співпадають'; 
+    valid = false; 
+  }
+
+  if (valid) {
+    setCookie('email', emailVal, 1);
+    setCookie('password', passVal, 1);
+    location.href = 'user.html';
+  }
+});
+</script>
+
+</body>
+</html>
