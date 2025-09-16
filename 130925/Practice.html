@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>Практична</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; }
+  section { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; border-radius: 8px; }
+  h2 { margin-top: 0; }
+  .error { color: red; font-size: 0.9em; }
+  .red-border { border: 2px solid red; }
+</style>
+</head>
+<body>
+
+<!-- ===== Завдання 1 ===== -->
+<section>
+<h2>1. Username</h2>
+<input type="text" id="username" placeholder="Лише латиниця та цифри">
+<div id="usernameErr" class="error"></div>
+</section>
+
+<!-- ===== Завдання 2 ===== -->
+<section>
+<h2>2. Логін з блокуванням після 5 помилок</h2>
+<form id="loginForm">
+  <input type="email" id="loginEmail" placeholder="Email" required>
+  <input type="password" id="loginPass" placeholder="Пароль" required>
+  <button type="submit">Увійти</button>
+</form>
+<div id="loginErr" class="error"></div>
+</section>
+
+<!-- ===== Завдання 3 ===== -->
+<section>
+<h2>3. Кількість місць</h2>
+<input type="number" id="seats" min="1" max="10">
+</section>
+
+<!-- ===== Завдання 4 ===== -->
+<section>
+<h2>4. Реєстрація з перевіркою спецсимволу</h2>
+<input type="password" id="regPass" placeholder="Пароль">
+<div id="regPassErr" class="error"></div>
+</section>
+
+<!-- ===== Завдання 5 ===== -->
+<section>
+<h2>5. Логін із запам'ятовуванням пароля</h2>
+<form id="rememberForm">
+  <input type="text" id="rememberUser" placeholder="Логін">
+  <input type="password" id="rememberPass" placeholder="Пароль">
+  <label><input type="checkbox" id="rememberChk"> Запам'ятати пароль</label>
+  <button type="submit">Увійти</button>
+</form>
+</section>
+
+<!-- ===== Завдання 6 ===== -->
+<section id="subscribeSection">
+<h2>6. Підписка на новини</h2>
+<form id="subscribeForm">
+  <input type="email" placeholder="Ваш email" required>
+  <button type="submit">Підписатися</button>
+</form>
+</section>
+
+<!-- ===== Завдання 7 ===== -->
+<section>
+<h2>7. Дата НЕ у майбутньому</h2>
+<input type="date" id="dateCheck">
+<div id="dateErr" class="error"></div>
+</section>
+
+<!-- ===== Завдання 8 ===== -->
+<section>
+<h2>8. Коментарі з автопідстановкою імені</h2>
+<form id="commentForm">
+  <input type="text" id="commentName" placeholder="Ім'я">
+  <textarea placeholder="Ваш коментар"></textarea>
+  <button type="submit">Надіслати</button>
+</form>
+</section>
+
+<!-- ===== Завдання 9 ===== -->
+<section>
+<h2>9. Промокод</h2>
+<form id="promoForm">
+  <input type="text" id="promoCode" placeholder="Введіть промокод">
+  <button type="submit">Застосувати</button>
+</form>
+<div id="promoErr" class="error"></div>
+</section>
+
+<!-- ===== Завдання 10 ===== -->
+<section>
+<h2>10. Бронювання готелю</h2>
+<form id="hotelForm">
+  <label>Дата заїзду: <input type="date" id="checkIn"></label>
+  <label>Дата виїзду: <input type="date" id="checkOut"></label>
+  <button type="submit" id="bookBtn">Забронювати</button>
+</form>
+<div id="hotelErr" class="error"></div>
+</section>
+
+<script>
+// cookie
+function setCookie(name, value, minutes) {
+  const d = new Date();
+  d.setTime(d.getTime() + minutes*60*1000);
+  document.cookie = `${name}=${encodeURIComponent(value)};expires=${d.toUTCString()};path=/`;
+}
+function getCookie(name) {
+  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  return match ? decodeURIComponent(match[2]) : null;
+}
+
+// Завдання 1
+username.addEventListener('input', () => {
+  if (!/^[A-Za-z0-9]*$/.test(username.value)) {
+    username.value = '';
+    usernameErr.textContent = 'Дозволені лише латинські букви та цифри';
+  } else {
+    usernameErr.textContent = '';
+  }
+});
+
+// Завдання 2
+let loginAttempts = parseInt(getCookie('loginAttempts') || '0');
+let blockedUntil = parseInt(getCookie('blockedUntil') || '0');
+
+function checkBlock() {
+  if (Date.now() < blockedUntil) {
+    loginErr.textContent = 'Форма заблокована до ' + new Date(blockedUntil).toLocaleTimeString();
+    return true;
+  }
+  return false;
+}
+loginForm.addEventListener('submit', e => {
+  e.preventDefault();
+  if (checkBlock()) return;
+  // Тут перевірка логіна/пароля (завжди помилка)
+  loginAttempts++;
+  if (loginAttempts >= 5) {
+    blockedUntil = Date.now() + 10*60*1000;
+    setCookie('blockedUntil', blockedUntil, 10);
+    loginErr.textContent = 'Заблоковано на 10 хвилин';
+    loginAttempts = 0;
+  } else {
+    loginErr.textContent = `Помилка входу. Залишилось спроб: ${5 - loginAttempts}`;
+  }
+  setCookie('loginAttempts', loginAttempts, 10);
+});
+
+// Завдання 3
+seats.addEventListener('input', () => {
+  if (seats.value > 10 || seats.value < 1) {
+    seats.classList.add('red-border');
+  } else {
+    seats.classList.remove('red-border');
+  }
+});
+
+// Завдання 4
+regPass.addEventListener('input', () => {
+  if (!/[!@#$%^&*]/.test(regPass.value)) {
+    regPassErr.textContent = 'Пароль має містити спецсимвол (!@#$%^&*)';
+  } else {
+    regPassErr.textContent = '';
+  }
+});
+
+// Завдання 5
+if (getCookie('savedPass')) {
+  rememberPass.value = atob(getCookie('savedPass'));
+}
+rememberForm.addEventListener('submit', e => {
+  e.preventDefault();
+  if (rememberChk.checked) {
+    setCookie('savedPass', btoa(rememberPass.value), 3*24*60);
+  }
+  alert('Вхід виконано');
+});
+
+// Завдання 6
+if (getCookie('subscribed')) {
+  subscribeSection.innerHTML = '<p>Ви вже підписані</p>';
+}
+subscribeForm?.addEventListener('submit', e => {
+  e.preventDefault();
+  setCookie('subscribed', 'yes', 365*24*60);
+  subscribeSection.innerHTML = '<p>Вас підписали на новини</p>';
+});
+
+// Завдання 7
+dateCheck.addEventListener('change', () => {
+  const selected = new Date(dateCheck.value);
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  if (selected > today) {
+    dateErr.textContent = 'Дата не може бути у майбутньому';
+  } else {
+    dateErr.textContent = '';
+  }
+});
+
+// Завдання 8
+if (getCookie('commentName')) {
+  commentName.value = getCookie('commentName');
+}
+commentForm.addEventListener('submit', e => {
+  e.preventDefault();
+  setCookie('commentName', commentName.value, 365*24*60);
+  alert('Коментар надіслано');
+});
+
+// Завдання 9
+let promoAttempts = parseInt(getCookie('promoAttempts') || '0');
+promoForm.addEventListener('submit', e => {
+  e.preventDefault();
+  if (promoAttempts >= 3) {
+    promoErr.textContent = 'Вичерпано кількість спроб';
+    return;
+  }
+  if (promoCode.value === 'DISCOUNT2025') {
+    promoErr.textContent = 'Промокод прийнято';
+  } else {
+    promoAttempts++;
+    setCookie('promoAttempts', promoAttempts, 60);
+    promoErr.textContent = `Невірний код. Залишилось спроб: ${3 - promoAttempts}`;
+  }
+});
+
+// Завдання 10
+function checkHotelDates() {
+  const inDate = new Date(checkIn.value);
+  const outDate = new Date(checkOut.value);
+
+  if (checkIn.value && checkOut.value && outDate <= inDate) {
+    hotelErr.textContent = 'Дата виїзду має бути пізніше за дату заїзду';
+    bookBtn.disabled = true;
+  } else {
+    hotelErr.textContent = '';
+    bookBtn.disabled = false;
+  }
+}
+
+// Перевірка при зміні будь-якої дати
+checkIn.addEventListener('change', checkHotelDates);
+checkOut.addEventListener('change', checkHotelDates);
+
+// Перевірка при відправці форми
+hotelForm.addEventListener('submit', e => {
+  e.preventDefault();
+  if (!bookBtn.disabled) {
+    alert('Бронювання успішне');
+  }
+});
+</script>
+
+</body>
+</html>
