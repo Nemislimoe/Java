@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>Практична2</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; }
+  input, button { padding: 6px; font-size: 14px; }
+  #result { margin-top: 20px; border: 1px solid #ccc; padding: 15px; border-radius: 8px; max-width: 400px; }
+  img { max-width: 150px; border-radius: 8px; }
+  .label { font-weight: bold; }
+</style>
+</head>
+<body>
+
+<h1>Пошук користувача GitHub</h1>
+<input type="text" id="login" placeholder="Введіть логін користувача">
+<button id="searchBtn">Пошук</button>
+
+<div id="result"></div>
+
+<script>
+document.getElementById('searchBtn').addEventListener('click', async () => {
+  const login = document.getElementById('login').value.trim();
+  const resultDiv = document.getElementById('result');
+  resultDiv.innerHTML = '';
+
+  if (!login) {
+    resultDiv.textContent = 'Введіть логін користувача';
+    return;
+  }
+
+  try {
+    const res = await fetch(`https://api.github.com/users/${encodeURIComponent(login)}`);
+    if (!res.ok) throw new Error('Користувача не знайдено');
+    const data = await res.json();
+
+    // Функція для перевірки наявності данних
+    const safe = val => val ? val : 'Немає данних';
+
+    resultDiv.innerHTML = `
+      <img src="${safe(data.avatar_url)}" alt="Аватар"><br><br>
+      <div><span class="label">Ім’я:</span> ${safe(data.name)}</div>
+      <div><span class="label">Логін:</span> ${safe(data.login)}</div>
+      <div><span class="label">GitHub:</span> ${data.html_url ? `<a href="${data.html_url}" target="_blank">${data.html_url}</a>` : 'Немає даних'}</div>
+      <div><span class="label">Блог:</span> ${data.blog ? `<a href="${data.blog}" target="_blank">${data.blog}</a>` : 'Немає даних'}</div>
+      <div><span class="label">Місто:</span> ${safe(data.location)}</div>
+      <div><span class="label">Пошта:</span> ${safe(data.email)}</div>
+      <div><span class="label">Підписники:</span> ${safe(data.followers)}</div>
+      <div><span class="label">Підписки:</span> ${safe(data.following)}</div>
+    `;
+  } catch (err) {
+    resultDiv.textContent = err.message;
+  }
+});
+</script>
+
+</body>
+</html>
