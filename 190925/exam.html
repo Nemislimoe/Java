@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>Task2</title>
+<style>
+  /* ===== Верхня панель ===== */
+  .topbar {
+    background-color: #1f2a36;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 25px;
+    height: 60px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+  .topbar .logo {
+    font-size: 22px;
+    font-weight: bold;
+    letter-spacing: 1px;
+  }
+  .main-nav {
+    display: flex;
+    align-items: center;
+  }
+  .main-nav button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 0 15px;
+    height: 60px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .main-nav button:hover { background-color: rgba(255,255,255,0.1); }
+  .main-nav button.active { background-color: rgba(255,255,255,0.2); }
+  .main-nav .divider {
+    width: 1px;
+    height: 24px;
+    background-color: rgba(255,255,255,0.3);
+  }
+
+  /* ===== Основні стилі ===== */
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #f4f6f8;
+    color: #333;
+  }
+  section { display: none; padding: 20px; }
+  h2 { margin-top: 0; }
+
+  /* ===== Таблиці ===== */
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 10px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+  th {
+    background-color: #f0f2f5;
+    padding: 10px;
+    text-align: left;
+    border-bottom: 2px solid #ddd;
+  }
+  td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #eee;
+  }
+  tr:hover { background-color: #f9fafb; }
+
+  /* ===== Поля вводу ===== */
+  input[type="text"], input[type="number"], input[type="date"], select {
+    padding: 6px;
+    margin: 5px 0;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  /* ===== Кнопки ===== */
+  button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    margin-top: 5px;
+    border-radius: 4px;
+    transition: background 0.2s;
+    cursor: pointer;
+  }
+  button:hover { background-color: #2980b9; }
+  button.cancel { background-color: #95a5a6; }
+  button.cancel:hover { background-color: #7f8c8d; }
+
+  /* ===== Кнопки-іконки в таблицях ===== */
+  .table-btn {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 4px 6px;
+    border-radius: 4px;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .table-btn.edit { color: #2980b9; }
+  .table-btn.edit:hover { background-color: rgba(41,128,185,0.1); transform: scale(1.1); }
+  .table-btn.delete { color: #c0392b; }
+  .table-btn.delete:hover { background-color: rgba(192,57,43,0.1); transform: scale(1.1); }
+
+  /* ===== Модальні вікна ===== */
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+  .modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .modal {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    width: 350px;
+    max-width: 90%;
+    animation: modalFadeIn 0.2s ease forwards;
+  }
+  .modal.closing {
+    animation: modalFadeOut 0.2s ease forwards;
+  }
+  @keyframes modalFadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  @keyframes modalFadeOut {
+    from { opacity: 1; transform: scale(1); }
+    to { opacity: 0; transform: scale(0.95); }
+  }
+
+  /* ===== Пошук і панель керування ===== */
+  .controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 8px;
+  }
+  .controls .spacer { flex: 1; }
+  .controls input[type="text"] { width: 200px; }
+  .controls select { width: 130px; }
+
+  /* ===== Сортування ===== */
+  th.sortable {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    padding-right: 22px;
+  }
+  th.sortable .sort-indicator {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    font-size: 12px;
+  }
+  th.sortable.active { color: #2c3e50; }
+  th.sortable.active .sort-indicator { color: #2c3e50; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="logo">LIBRARY</div>
+  <nav class="main-nav">
+    <button data-tab="books">Books</button>
+    <span class="divider"></span>
+    <button data-tab="visitors">Visitors</button>
+    <span class="divider"></span>
+    <button data-tab="cards">Cards</button>
+    <span class="divider"></span>
+    <button data-tab="stats">Statistics</button>
+  </nav>
+</header>
+
+<!-- Books -->
+<section id="books">
+  <h2>All Books</h2>
+  <div class="controls">
+    <button onclick="showBookForm()">New book</button>
+    <span class="spacer"></span>
+    <input type="text" id="bookSearch" placeholder="Search by title, author...">
+    <select id="bookSortKey">
+      <option value="">Sort by</option>
+      <option value="title">Title</option>
+      <option value="author">Author</option>
+      <option value="year">Year</option>
+      <option value="publisher">Publisher</option>
+      <option value="pages">Pages</option>
+      <option value="count">Count</option>
+    </select>
+    <select id="bookSortDir">
+      <option value="1">Ascending</option>
+      <option value="-1">Descending</option>
+    </select>
+    <button onclick="applyBookSort()">Apply</button>
+  </div>
+  <table id="booksTable">
+    <thead>
+      <tr>
+        <th class="sortable" data-sort="title">Title <span class="sort-indicator"></span></th>
+        <th class="sortable" data-sort="author">Author <span class="sort-indicator"></span></th>
+        <th class="sortable" data-sort="year">Year <span class="sort-indicator"></span></th>
+        <th class="sortable" data-sort="publisher">Publisher <span class="sort-indicator"></span></th>
+        <th class="sortable" data-sort="pages">Pages <span class="sort-indicator"></span></th>
+        <th class="sortable" data-sort="count">Count <span class="sort-indicator"></span></th>
+        <th>Edit</th><th>Delete</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</section>
+
+<!-- Visitors -->
+<section id="visitors">
+  <h2>All Visitors</h2>
+  <div class="controls">
+    <button onclick="showVisitorForm()">New visitor</button>
+    <span class="spacer"></span>
+    <input type="text" id="visitorSearch" placeholder="Search by name or phone...">
+    <select id="visitorSortKey">
+      <option value="">Sort by</option>
+      <option value="name">Name</option>
+      <option value="phone">Phone</option>
+    </select>
+    <select id="visitorSortDir">
+      <option value="1">Asc</option>
+      <option value="-1">Desc</option>
+    </select>
+    <button onclick="applyVisitorSort()">Apply</button>
+  </div>
+  <table id="visitorsTable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th class="sortable" data-sort="name">Name <span class="sort-indicator"></span></th>
+        <th class="sortable" data-sort="phone">Phone <span class="sort-indicator"></span></th>
+        <th>Edit</th><th>Delete</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</section>
+
+<!-- Cards -->
+<section id="cards">
+  <h2>All Cards</h2>
+  <button onclick="showCardForm()">New card</button>
+  <table id="cardsTable">
+    <thead>
+      <tr>
+        <th>ID</th><th>Visitor</th><th>Book</th><th>Borrow Date</th><th>Return Date</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</section>
+
+<!-- Statistics -->
+<section id="stats">
+  <h2>Top 5 Books</h2>
+  <ul id="topBooks"></ul>
+  <h2>Top 5 Visitors</h2>
+  <ul id="topVisitors"></ul>
+</section>
+
+<!-- Book Modal -->
+<div id="bookForm" class="modal-overlay">
+  <div class="modal">
+    <h3 id="bookFormTitle">Add Book</h3>
+    <input type="hidden" id="bookIndex">
+    <input placeholder="Title" id="bookTitle"><br>
+    <input placeholder="Author" id="bookAuthor"><br>
+    <input placeholder="Year" type="number" id="bookYear"><br>
+    <input placeholder="Publisher" id="bookPublisher"><br>
+    <input placeholder="Pages" type="number" id="bookPages"><br>
+    <input placeholder="Count" type="number" id="bookCount"><br>
+    <button onclick="saveBook()">Save</button>
+    <button class="cancel" onclick="hideBookForm()">Cancel</button>
+  </div>
+</div>
+
+<!-- Visitor Modal -->
+<div id="visitorForm" class="modal-overlay">
+  <div class="modal">
+    <h3 id="visitorFormTitle">Add Visitor</h3>
+    <input type="hidden" id="visitorIndex">
+    <input placeholder="Full name" id="visitorName"><br>
+    <input placeholder="Phone" id="visitorPhone"><br>
+    <button onclick="saveVisitor()">Save</button>
+    <button class="cancel" onclick="hideVisitorForm()">Cancel</button>
+  </div>
+</div>
+
+<!-- Card Modal -->
+<div id="cardForm" class="modal-overlay">
+  <div class="modal">
+    <h3>New Card</h3>
+    <label for="cardVisitor">Visitor:</label>
+    <select id="cardVisitor"></select><br>
+    <label for="cardBook">Book:</label>
+    <select id="cardBook"></select><br>
+    <label for="cardReturnDate">Return Date:</label>
+    <input type="date" id="cardReturnDate"><br>
+    <button onclick="saveCard()">Save</button>
+    <button class="cancel" onclick="hideCardForm()">Cancel</button>
+  </div>
+</div>
+
+<script>
+let books    = JSON.parse(localStorage.getItem('books')   || '[]');
+let visitors = JSON.parse(localStorage.getItem('visitors')|| '[]');
+let cards    = JSON.parse(localStorage.getItem('cards')   || '[]');
+
+const state = {
+  books:    { search:'', sortKey:null, sortDir:1 },
+  visitors: { search:'', sortKey:null, sortDir:1 }
+};
+const normalize = s => (s??'').toString().toLowerCase().replace(/\s+/g,' ').trim();
+
+// Навігація
+document.querySelectorAll('.main-nav button').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('section').forEach(s=>s.style.display='none');
+    document.getElementById(btn.dataset.tab).style.display='block';
+    document.querySelectorAll('.main-nav button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    render();
+  });
+});
+document.querySelector('.main-nav button').click();
+
+// Кнопки сортування
+function applyBookSort(){
+  state.books.sortKey = document.getElementById('bookSortKey').value;
+  state.books.sortDir = +document.getElementById('bookSortDir').value;
+  renderBooks(); updateSortIndicators('booksTable',state.books.sortKey,state.books.sortDir);
+}
+function applyVisitorSort(){
+  state.visitors.sortKey = document.getElementById('visitorSortKey').value;
+  state.visitors.sortDir = +document.getElementById('visitorSortDir').value;
+  renderVisitors(); updateSortIndicators('visitorsTable',state.visitors.sortKey,state.visitors.sortDir);
+}
+
+// Click-сортування по заголовках
+function setupSorting(){
+  document.querySelectorAll('#booksTable th.sortable').forEach(th=>{
+    th.addEventListener('click',()=>{
+      const k = th.dataset.sort;
+      if(state.books.sortKey===k) state.books.sortDir*=-1;
+      else { state.books.sortKey=k; state.books.sortDir=1; }
+      renderBooks(); updateSortIndicators('booksTable',state.books.sortKey,state.books.sortDir);
+      // оновлюємо селект
+      document.getElementById('bookSortKey').value = state.books.sortKey||'';
+      document.getElementById('bookSortDir').value = state.books.sortDir;
+    });
+  });
+  document.querySelectorAll('#visitorsTable th.sortable').forEach(th=>{
+    th.addEventListener('click',()=>{
+      const k = th.dataset.sort;
+      if(state.visitors.sortKey===k) state.visitors.sortDir*=-1;
+      else { state.visitors.sortKey=k; state.visitors.sortDir=1; }
+      renderVisitors(); updateSortIndicators('visitorsTable',state.visitors.sortKey,state.visitors.sortDir);
+      document.getElementById('visitorSortKey').value = state.visitors.sortKey||'';
+      document.getElementById('visitorSortDir').value = state.visitors.sortDir;
+    });
+  });
+}
+function updateSortIndicators(tableId,key,dir){
+  document.querySelectorAll(`#${tableId} th.sortable`).forEach(th=>{
+    th.classList.remove('active');
+    th.querySelector('.sort-indicator').textContent='';
+    if(th.dataset.sort===key){
+      th.classList.add('active');
+      th.querySelector('.sort-indicator').textContent = dir===1?'▲':'▼';
+    }
+  });
+}
+
+// Пошук
+function setupSearch(){
+  const debounce = (fn,wait=200)=>{ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a),wait); }; };
+  document.getElementById('bookSearch').addEventListener('input',debounce(e=>{
+    state.books.search=normalize(e.target.value); renderBooks();
+  }));
+  document.getElementById('visitorSearch').addEventListener('input',debounce(e=>{
+    state.visitors.search=normalize(e.target.value); renderVisitors();
+  }));
+}
+
+// Books
+function renderBooks(){
+  const tbody = document.querySelector('#booksTable tbody');
+  tbody.innerHTML = '';
+  const q = state.books.search;
+  books.map((b,i)=>b?{...b,_idx:i}:null).filter(Boolean)
+    .filter(b=>!q||normalize(`${b.title} ${b.author} ${b.publisher} ${b.year} ${b.pages} ${b.count}`).includes(q))
+    .sort((a,b)=>{
+      if(!state.books.sortKey) return 0;
+      let av=a[state.books.sortKey], bv=b[state.books.sortKey];
+      if(typeof av==='number') return (av-bv)*state.books.sortDir;
+      return av.toString().localeCompare(bv.toString(),undefined,{numeric:true})*state.books.sortDir;
+    })
+    .forEach(b=>{
+      tbody.innerHTML += `<tr>
+        <td>${b.title}</td><td>${b.author}</td><td>${b.year}</td>
+        <td>${b.publisher}</td><td>${b.pages}</td><td>${b.count}</td>
+        <td><button class="table-btn edit" onclick="editBook(${b._idx})">✎</button></td>
+        <td><button class="table-btn delete" onclick="deleteBook(${b._idx})">🗑</button></td>
+      </tr>`;
+    });
+}
+function showBookForm(i){
+  const ov=document.getElementById('bookForm'), m=ov.querySelector('.modal');
+  ov.classList.add('active'); m.classList.remove('closing');
+  if(i!=null){
+    const b=books[i];
+    bookIndex.value=i; bookTitle.value=b.title; bookAuthor.value=b.author;
+    bookYear.value=b.year; bookPublisher.value=b.publisher;
+    bookPages.value=b.pages; bookCount.value=b.count;
+  } else {
+    [bookIndex,bookTitle,bookAuthor,bookYear,bookPublisher,bookPages,bookCount]
+      .forEach(f=>f.value='');
+  }
+}
+function hideBookForm(){
+  const ov=document.getElementById('bookForm'), m=ov.querySelector('.modal');
+  m.classList.add('closing');
+  setTimeout(()=>{
+    ov.classList.remove('active');
+    m.classList.remove('closing');
+  },200);
+}
+function saveBook(){
+  const b={
+    title:bookTitle.value.trim(),
+    author:bookAuthor.value.trim(),
+    year:+bookYear.value,
+    publisher:bookPublisher.value.trim(),
+    pages:+bookPages.value,
+    count:+bookCount.value
+  };
+  if(!b.title||!b.author||b.year<0||b.pages<0||b.count<0) return alert('Invalid data');
+  const idx = bookIndex.value;
+  if(idx!=='') books[idx]=b; else books.push(b);
+  localStorage.setItem('books',JSON.stringify(books));
+  hideBookForm(); renderBooks();
+}
+function editBook(i){ showBookForm(i); }
+function deleteBook(i){
+  if(!confirm('Delete this book?')) return;
+  books.splice(i,1);
+  localStorage.setItem('books',JSON.stringify(books));
+  renderBooks();
+}
+
+// Visitors
+function renderVisitors(){
+  const tbody = document.querySelector('#visitorsTable tbody');
+  tbody.innerHTML = '';
+  const q = state.visitors.search;
+  visitors.map((v,i)=>({...v,_idx:i}))
+    .filter(v=>!q||normalize(`${v.name} ${v.phone}`).includes(q))
+    .sort((a,b)=>{
+      if(!state.visitors.sortKey) return 0;
+      return a[state.visitors.sortKey].toString()
+        .localeCompare(b[state.visitors.sortKey].toString(),undefined,{numeric:true})
+        * state.visitors.sortDir;
+    })
+    .forEach((v,iDisp)=>{
+      tbody.innerHTML += `<tr>
+        <td>${iDisp+1}</td><td>${v.name}</td><td>${v.phone}</td>
+        <td><button class="table-btn edit" onclick="editVisitor(${v._idx})">✎</button></td>
+        <td><button class="table-btn delete" onclick="deleteVisitor(${v._idx})">🗑</button></td>
+      </tr>`;
+    });
+}
+function showVisitorForm(i){
+  const ov=document.getElementById('visitorForm'), m=ov.querySelector('.modal');
+  ov.classList.add('active'); m.classList.remove('closing');
+  if(i!=null){
+    const v=visitors[i];
+    visitorIndex.value=i; visitorName.value=v.name; visitorPhone.value=v.phone;
+  } else {
+    [visitorIndex,visitorName,visitorPhone].forEach(f=>f.value='');
+  }
+}
+function hideVisitorForm(){
+  const ov=document.getElementById('visitorForm'), m=ov.querySelector('.modal');
+  m.classList.add('closing');
+  setTimeout(()=>{
+    ov.classList.remove('active');
+    m.classList.remove('closing');
+  },200);
+}
+function saveVisitor(){
+  const v={ name:visitorName.value.trim(), phone:visitorPhone.value.trim() };
+  if(!v.name||!/^[\d\s-]+$/.test(v.phone)) return alert('Invalid data');
+  const idx = visitorIndex.value;
+  if(idx!=='') visitors[idx]=v; else visitors.push(v);
+  localStorage.setItem('visitors',JSON.stringify(visitors));
+  hideVisitorForm(); renderVisitors();
+}
+function editVisitor(i){ showVisitorForm(i); }
+function deleteVisitor(i){
+  if(!confirm('Delete this visitor?')) return;
+  visitors.splice(i,1);
+  localStorage.setItem('visitors',JSON.stringify(visitors));
+  renderVisitors();
+}
+
+// Cards
+function renderCards(){
+  const tbody = document.querySelector('#cardsTable tbody');
+  tbody.innerHTML = '';
+  cards.forEach((c,i)=>{
+    tbody.innerHTML += `<tr>
+      <td>${i+1}</td>
+      <td>${visitors[c.visitor]?.name || '—'}</td>
+      <td>${books[c.book]?.title || '—'}</td>
+      <td>${c.borrowDate}</td>
+      <td>${c.returnDate || ''}</td>
+    </tr>`;
+  });
+}
+function showCardForm(){
+  const ov=document.getElementById('cardForm'), m=ov.querySelector('.modal');
+  ov.classList.add('active'); m.classList.remove('closing');
+
+  const vSel=document.getElementById('cardVisitor');
+  const bSel=document.getElementById('cardBook');
+  vSel.innerHTML = visitors.map((v,i)=>`<option value="${i}">${v.name}</option>`).join('');
+  bSel.innerHTML = books.map((b,i)=>`<option value="${i}">${b.title}</option>`).join('');
+  cardReturnDate.value = ''; // обнуляємо
+}
+function hideCardForm(){
+  const ov=document.getElementById('cardForm'), m=ov.querySelector('.modal');
+  m.classList.add('closing');
+  setTimeout(()=>{
+    ov.classList.remove('active');
+    m.classList.remove('closing');
+  },200);
+}
+function saveCard(){
+  const vi = +cardVisitor.value;
+  const bi = +cardBook.value;
+  const br = new Date().toLocaleDateString();
+  const rt = cardReturnDate.value; // yyyy-mm-dd
+  if(!rt) return alert('Please set return date');
+  cards.push({ visitor:vi, book:bi, borrowDate:br, returnDate:rt });
+  localStorage.setItem('cards',JSON.stringify(cards));
+  hideCardForm(); renderCards(); renderStats();
+}
+
+// Statistics
+function renderStats(){
+  const bookCount = {};
+  cards.forEach(c=>{ bookCount[c.book] = (bookCount[c.book]||0) + 1; });
+  const topBooksArr = Object.entries(bookCount).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  document.getElementById('topBooks').innerHTML = topBooksArr
+    .map(([idx,ct])=>`<li>${books[idx]?.title||'—'} — ${ct} time(s)</li>`).join('');
+  const visitorCount = {};
+  cards.forEach(c=>{ visitorCount[c.visitor] = (visitorCount[c.visitor]||0) + 1; });
+  const topVisitorsArr = Object.entries(visitorCount).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  document.getElementById('topVisitors').innerHTML = topVisitorsArr
+    .map(([idx,ct])=>`<li>${visitors[idx]?.name||'—'} — ${ct} book(s)</li>`).join('');
+}
+
+// Закриття модалок кліком по фону
+document.querySelectorAll('.modal-overlay').forEach(ov=>{
+  ov.addEventListener('click',e=>{
+    if(e.target===ov){
+      if(ov.id==='bookForm')    hideBookForm();
+      if(ov.id==='visitorForm') hideVisitorForm();
+      if(ov.id==='cardForm')    hideCardForm();
+    }
+  });
+});
+
+// Ініціалізація
+setupSorting();
+setupSearch();
+
+// Загальний рендер
+function render(){
+  renderBooks();
+  renderVisitors();
+  renderCards();
+  renderStats();
+}
+</script>
+
+</body>
+</html>
